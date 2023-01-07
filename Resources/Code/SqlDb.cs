@@ -118,11 +118,12 @@ namespace LifeDB.Resources.Code
 
         public static Boolean Add(SqlPacket sqlPacket)  
         {
+            
             //item_name, item_quantity, item_category, added, expires, limit
 
 
-            SqlString keys = new SqlString(new String("item_name,item_quantity,item_category,added,expires,limit"));
-            SqlString values = PacketValuesParser(sqlPacket);
+            //SqlString keys = new SqlString(new String("item_name,item_quantity,item_category,added,expires,limit"));
+            //SqlString values = PacketValuesParser(sqlPacket);
 
             //tell me...i didn't need to convert all the string to sqlStrings >.< :: dude...
             try
@@ -130,7 +131,10 @@ namespace LifeDB.Resources.Code
                 SQLiteCommand command;
                 command = SqlDb.connection.CreateCommand();
 
-                command.CommandText = "INSERT INTO myTable ("+keys.ToString()+") VALUES ("+values.ToString()+")";
+                command.CommandText = "INSERT INTO myTable ("+sqlPacket.GetKeyCSVString()+") " +
+                                                    "VALUES ("+sqlPacket.GetValueCSVString()+")";
+
+                command.ExecuteNonQuery();
 
             }
             catch (Exception e)
@@ -140,26 +144,31 @@ namespace LifeDB.Resources.Code
             }
 
             return true;
-
+            
         }
 
         //NOT DONE!
         public static Boolean Edit(SqlPacket sqlPacket)
         {
-            //item_name, item_quantity, item_category, added, expires, limit
 
+            var keys = sqlPacket.GetKeys();
+            var values = sqlPacket.GetValues();
 
-            SqlString keys = new SqlString(new String("item_name,item_quantity,item_category,added,expires,limit"));
-            SqlString values = PacketValuesParser(sqlPacket);
-
-            //tell me...i didn't need to convert all the string to sqlStrings >.< :: dude...
+            Func<String, String, String> Mergilizer = (s1,s2) => s1 + "=" + s2;
+            
             try
             {
                 SQLiteCommand command;
                 command = SqlDb.connection.CreateCommand();
 
-                command.CommandText = "INSERT INTO myTable (" + keys.ToString() + ") VALUES (" + values.ToString() + ")";
+                command.CommandText = "INSERT INTO myTable ("+ keys.ToString() +") VALUES ("+ values.ToString() +")";
+                                    //"UPDATE myTable"+
+                                    //"
+                                    //"WHERE id = [*id.getVal*]
 
+                                    //id will be key 0, value 0 :: need substring of keys & values of 0-1 in/ex
+                                    //we need a sneaky way back to avoiding going over the whole csv and splitting
+                                    //OK...method instead of CSV...it'll 
             }
             catch (Exception e)
             {
@@ -185,7 +194,7 @@ namespace LifeDB.Resources.Code
 
 
 
-
+        /*
 
         //Apologies to anyone who sees this...I'm still getting used to working with sharp...O.O i realize an IList<<,>> would've been the better choice to build but >.> what can ya' do?
         public class SqlPacket
@@ -435,10 +444,11 @@ namespace LifeDB.Resources.Code
 
         //==============================//
          
-
+       
     }
 
     //EXPERIMENTATION
+    //Edit: Mmmmm, yeees...look at all my pokemon cards... (✿◕‿◕✿)
     public class SqlPacket
     {
         //need a higher order system for these arbitrary nums 
