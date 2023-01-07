@@ -441,23 +441,53 @@ namespace LifeDB.Resources.Code
     //EXPERIMENTATION
     public class SqlPacket
     {
+        //need a higher order system for these arbitrary nums 
+        //long SqlPacketId;
+        //long SqlPacketVersion;
 
         IList<KVP<String, String>> Mappings = new List<KVP<String, String>>(); 
     
-        
-        public void Add(String key, String value)
+        public SqlPacket() 
+        { 
+            //SqlPacketId++; //Make this & class threadsafe
+        }  
+
+        public void Add(String key, String? value)
         {
             //pairs.Add(new KVP("key", "value"));
             Mappings.Add(new KVP<String, String>(key, value));
-            
+             
         }
 
-        //I Smell Concurrent Modification Exceptions...but we'll see how this goes...
-        //Edit...we'll make a temp copy, iterate over that, then remove from main on the match in copy.
-        public void Remove(String key)
+        public void Build(String[] pairs)
         {
+            //Was right to check this...length starts count at 1 in sharp
+            if(pairs.Length % 2 != 0)
+            {
+                throw new FormatException("You must provide values as k,v,k,v :: if a value doesn't exist, pass null w/o quotes");
+            }
 
-            foreach (KVP<String, String> pair in Mappings)
+            /*
+               a,b,c,d :: content
+               0,1,2,3 :: index
+               1,2,3,4 :: length
+               k,v,k,v :: process
+                                  */
+
+            for(int k = 0, v = k+1; v <= pairs.Length-1; k += 2)
+            {
+                Add(pairs[k], pairs[v]);
+            }
+
+            Console.WriteLine("SqlPacket Build Successful! =)");
+
+        }
+        
+        public void RemoveKey(String key)
+        {
+            var copy = Copy(Mappings);
+
+            foreach (KVP<String, String> pair in copy)
             {
                 if(pair.GetKey() == key)
                 {
@@ -466,16 +496,38 @@ namespace LifeDB.Resources.Code
 
                 }
             }
+
+        }
+
+        public void RemoveValue(String value)
+        {
+            var copy = Copy(Mappings);
+
+            foreach (KVP<String, String> pair in copy)
+            {
+                if (pair.GetValue() == value)
+                {
+                    Mappings.Remove(pair);
+                    break;
+
+                }
+            }
+
         }
 
         public IList<KVP<String,String>> Copy(IList<KVP<String,String>> map) 
-        { 
-        
+        {
 
+            var copy = new List<KVP<String,String>>();
+
+            foreach(KVP<String, String> pair in Mappings)
+            {
+                copy.Add(pair);
+            }
+
+            return copy;
 
         }
-
-
 
         public IList<String> GetKeys()
         {
@@ -489,24 +541,63 @@ namespace LifeDB.Resources.Code
             return KeyList;
 
         }
+      
         public IList<String> GetValues()
         {
-            IList<String> KeyList = new List<String>();
+            IList<String> ValueList = new List<String>();
 
             foreach (KVP<String, String> pair in Mappings)
             {
-                KeyList.Add(pair.GetValue());
+                ValueList.Add(pair.GetValue());
             }
+
+            return ValueList;
+        }
+
+        public String GetKeyCSVString()
+        {
+            StringBuilder sb = new StringBuilder();
+            int counter = 0;
+
+            foreach (KVP<String, String> pair in Mappings)
+            {
+                sb.Append(pair.GetKey());
+                if(counter < Mappings.Count()) sb.Append(',');           
+                counter++;
+            }
+
+            return sb.ToString();
 
         }
 
+        public String GetValueCSVString()
+        {
+            StringBuilder sb = new StringBuilder();
+            int counter = 0;
+
+            foreach (KVP<String, String> pair in Mappings)
+            {
+                sb.Append(pair.GetValue());
+                if (counter < Mappings.Count()) sb.Append(',');
+                counter++;
+            }
+
+            return sb.ToString();
+
+        }
+
+        //Duplikey Method? :: For sh_ts and giggles?
+        //(Immediate implication: 1 key many vals, secondary...would serve as an inline multidimentional arraylistmap for building many sqlpackets on interation)
+        //Would be good to have an abstraction above this...call it a handler or something, but regardless...it could hold an array of sqlpackets, duplikey or otherwise
+        //it'd also get the responsibility of scheduling/(multithreading) the writes
+        //[could possibly require null keys after the first to signify 1 key many vals]
 
     }
 
     public class KVP<K,V>
     {
         private K Key;
-        private V Value;
+        private V? Value;
 
         public KVP(K k, V v)
         {
