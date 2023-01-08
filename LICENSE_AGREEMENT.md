@@ -22,8 +22,12 @@ The original version is available on GitHub.
 **Sales:** This is a free software, and may not be sold for profit.  Modifications are not exempt from the clause.  
 Fair payment may be accepted for data transmission fees only.
 
+**Copyright:** All code and contributions are copyright of their respective authors/sub-authors.  If an sub/author requests their code be removed from a flavor or distribution, it must be done in all active versions / flavors using / based on it. 
+
+**Copyright Hardcopy Clause:** *Any author/sub-author grants a loophole to the above clause:* >>---> If the code requested to be removed was distributed by hard means such as disk, or flashdrive where removability / updatability / accessability is difficult or unachievable, the author(s)/sub-author(s) agrees to hold harmless that distributed version in that circumstance, and agrees to not attempt legal action on the author(s) or sub-author(s). 
+
 **Compliance:** Failure To Comply with the rules and policies of this license and agreement may result in negative outcome,
-in whatever form it may take.  
+in whatever form it may take.
   
 **<===AGREEMENT===>**
 
