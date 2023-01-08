@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -154,21 +155,53 @@ namespace LifeDB.Resources.Code
             var keys = sqlPacket.GetKeys();
             var values = sqlPacket.GetValues();
 
-            Func<String, String, String> Mergilizer = (s1,s2) => s1 + "=" + s2;
+            Func<String, String, String> MergeIdAssigned = (s1,s2) => s1 + " = " + s2;
+            Func<String, String, String> MergilizeAssignments = (s1, s2) => s1 + " = '" + s2 + "', ";
+            Func<String, String, String> MergilizeAssignmentsWOTrailingComma = (s1, s2) => s1 + " = '" + s2 + "' ";
+
+            String ASSIGNED = ""; 
+            StringBuilder ASSIGNMENTS = new();
+
+            //Brain says this is ok...so I'm going with it...review me!
+            int adjustedPairCount = ((keys.Count()-1 + values.Count()-1) / 2);
+            for (int i = 0; i != adjustedPairCount; i++)
+            {
+                //SET ContactName = 'Alfred Schmidt', City = 'Frankfurt'
+                
+                if (i == 0)
+                {
+                    ASSIGNED = MergeIdAssigned(keys[i], values[i]); 
+                    continue;
+                }
+
+                if (i != adjustedPairCount - 1) 
+                    ASSIGNMENTS.Append(MergilizeAssignments(keys[i], values[i]));
+                else                            
+                    ASSIGNMENTS.Append(MergilizeAssignmentsWOTrailingComma(keys[i], values[i]));
+
+                
+
+            }
+
+            //WHERE can take a number or a 'string', we need to test parse the first value...
+            //we won't need it for the basic usage, but for future extentions that will use something else...we must 
+            //but sql commands are strings...so it should parse it on its end...I'll skip and we'll see what happens
             
             try
             {
                 SQLiteCommand command;
                 command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable ("+ keys.ToString() +") VALUES ("+ values.ToString() +")";
-                                    //"UPDATE myTable"+
-                                    //"
-                                    //"WHERE id = [*id.getVal*]
+               // Count() starts at 1 :: Index[] starts at 0 
+               // var k = Mergilizer(keys[0], values[0]);
+                command.CommandText = "UPDATE myTable " + "SET " + ASSIGNMENTS + "WHERE " + ASSIGNED;
+                                    
 
                                     //id will be key 0, value 0 :: need substring of keys & values of 0-1 in/ex
                                     //we need a sneaky way back to avoiding going over the whole csv and splitting
-                                    //OK...method instead of CSV...it'll 
+                                    //OK...method instead of CSV...it'll +
+                                    // 
+                                    // Ok...We'll call Mergilizer on 1 in getKeys & get Values to get the WHERE 
+                                    //
             }
             catch (Exception e)
             {
