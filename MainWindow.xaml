@@ -148,7 +148,7 @@
 
                     <FlowDocument>
 
-                        <Table>
+                        <Table x:Name="myTable">
 
                             <Table.Columns>
                                 <TableColumn/>

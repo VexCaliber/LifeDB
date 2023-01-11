@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Data.SqlTypes;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -25,23 +26,32 @@ namespace LifeDB.Resources.Code
         {
 
             //new SQLiteConnection("Data Source=database.db; Version = 3; New = True; Compress = True;");
-            //file://LifeDB//Resources//Files//Db//Base.db
+            //Data Source = file://LifeDB//Resources//Files//Db//myDatabase.db
+          
 
-            SQLiteConnection sqlite_conn =  new SQLiteConnection("Data Source=file://LifeDB//Resources//Files//Db//Base.db; " +
-                                                                 "Version = 3; " +
-                                                                 "UseUTF16Encoding = true; " +
-                                                                 "DatTimeFormat = UnixEpoch;" +
-                                                                 "New = True; " +
-                                                                 "Compress = True;");
+            //SQLiteConfigDbOpsEnum liteConfigDbOpsEnum = new SQLiteConfigDbOpsEnum();
+
+            //SQLiteConnectionStringBuilder slcsb = new();
+            //slcsb.
+
+            //NOTE TO SELF: SET DEBUG EXECUTION TO THE LIFEDB directory
+            SQLiteConnection sqlite_conn = new SQLiteConnection("Data Source = /LifeDB//Resources//Files//Db//myDatabase.db; "); //+
+                                                                 //"SQLITE_USE_URI = 1" +
+                                                                // "Version = 3;" +
+                                                                 //"UseUTF16Encoding = true; " +
+                                                                 //"DatTimeFormat = UnixEpoch;" +
+                                                                // "New = True; " +
+                                                                // "Compress = True;");
             
             // Open the connection:
             try
             {
                  sqlite_conn.Open();
+                 Console.WriteLine("Connected!");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString() + " @SqlDb.Connect");
+                Console.WriteLine(e.ToString() + " @SqlDb.Connect()");
             }
 
             return sqlite_conn;
@@ -148,7 +158,7 @@ namespace LifeDB.Resources.Code
             
         }
 
-        //NOT DONE!
+        
         public static Boolean Edit(SqlPacket sqlPacket)
         {
 
@@ -191,21 +201,15 @@ namespace LifeDB.Resources.Code
             {
                 SQLiteCommand command;
                 command = SqlDb.connection.CreateCommand();
-               // Count() starts at 1 :: Index[] starts at 0 
-               // var k = Mergilizer(keys[0], values[0]);
-                command.CommandText = "UPDATE myTable " + "SET " + ASSIGNMENTS + "WHERE " + ASSIGNED;
-                                    
-
-                                    //id will be key 0, value 0 :: need substring of keys & values of 0-1 in/ex
-                                    //we need a sneaky way back to avoiding going over the whole csv and splitting
-                                    //OK...method instead of CSV...it'll +
-                                    // 
-                                    // Ok...We'll call Mergilizer on 1 in getKeys & get Values to get the WHERE 
-                                    //
+                // Count() starts at 1 :: Index[] starts at 0 
+                // var k = Mergilizer(keys[0], values[0]);
+               
+                command.CommandText = "UPDATE myTable " + "SET " + ASSIGNMENTS + "WHERE " + ASSIGNED;                                   
+                                  
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name)");
+                Console.WriteLine(e.ToString() + " @SqlDB.Edit(SqlPacket sqlPacket)");
                 return false;
             }
 
@@ -214,6 +218,33 @@ namespace LifeDB.Resources.Code
         }
 
 
+        //DEFAULT IS REMOVE BY ID...
+        //Should take every other value except expressions, but if written right...it may go through
+        public static Boolean Remove(SqlPacket sqlPacket)
+        {
+
+            var key = sqlPacket.GetKeys();
+            var value = sqlPacket.GetValues();
+
+            Func<String, String, String> MergeIdAssigned = (s1, s2) => s1 + " = " + s2;
+
+            String ASSIGNED = MergeIdAssigned(key[0], value[0]);
+
+            try
+            {
+                SQLiteCommand command;
+                command = SqlDb.connection.CreateCommand();                
+                command.CommandText = "DELETE FROM myTable WHERE " + ASSIGNED;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString() + " @SqlDB.Remove(SqlPacket sqlPacket)");
+                return false;
+            }
+
+            return true;
+
+        } 
 
 
 
@@ -517,7 +548,7 @@ namespace LifeDB.Resources.Code
                k,v,k,v :: process
                                   */
 
-            for(int k = 0, v = k+1; v <= pairs.Length-1; k += 2)
+            for(int k = 0, v = k+1; v <= pairs.Length-1; k += 2) //REVIEW ME!!!
             {
                 Add(pairs[k], pairs[v]);
             }
@@ -525,7 +556,7 @@ namespace LifeDB.Resources.Code
             Console.WriteLine("SqlPacket Build Successful! =)");
 
         }
-        
+       
         public void RemoveKey(String key)
         {
             var copy = Copy(Mappings);
@@ -629,11 +660,11 @@ namespace LifeDB.Resources.Code
 
         }
 
-        //Duplikey Method? :: For sh_ts and giggles?
+        /*Duplikey Method? :: For sh_ts and giggles?
         //(Immediate implication: 1 key many vals, secondary...would serve as an inline multidimentional arraylistmap for building many sqlpackets on interation)
         //Would be good to have an abstraction above this...call it a handler or something, but regardless...it could hold an array of sqlpackets, duplikey or otherwise
         //it'd also get the responsibility of scheduling/(multithreading) the writes
-        //[could possibly require null keys after the first to signify 1 key many vals]
+        //[could possibly require null keys after the first to signify 1 key many vals]*/
 
     }
 

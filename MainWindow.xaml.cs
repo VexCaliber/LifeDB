@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LifeDB.Resources.Code;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,23 @@ namespace LifeDB
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        SqlDb db = new SqlDb();
+
         public MainWindow()
         {
+
             InitializeComponent();
+
+            SqlDb.Connect();
+
+            String[] pairs = new String[] {"id", "1", "item_name", "testName"};
+            //SqlPacket x = new SqlPacket().Build(pairs);
+            //SqlDb.Add();
+            
+
+            // this.myTable.RowGroups.Add(new TableRowGroup().Rows.Add(new TableRow().));
+
         }
 
         private void MinWindow(object sender, RoutedEventArgs e)

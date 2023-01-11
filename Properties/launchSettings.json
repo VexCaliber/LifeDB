@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LifeDB": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\bette\\source\\repos\\LifeDB"
+    }
+  }
+}
