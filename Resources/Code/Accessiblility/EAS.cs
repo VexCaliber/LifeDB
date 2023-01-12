@@ -10,6 +10,8 @@ namespace LifeDB.Resources.Code.Accessiblility
     public static class EAS
     {
 
+        private static Boolean ALLOW_EAS;
+
         public static void accept(Exception e)
         {
 
@@ -19,6 +21,16 @@ namespace LifeDB.Resources.Code.Accessiblility
             // ^_~ we like the stock
 
 
+        }
+
+        public static void EASON()
+        {
+            ALLOW_EAS = true;
+        }
+
+        public static void EASOFF()
+        {
+            ALLOW_EAS = false;
         }
 
     }

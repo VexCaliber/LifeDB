@@ -106,15 +106,15 @@ namespace LifeDB.Resources.Code
                     "UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)";
                                                                          */
             //id will auto-increment on missing/null vals...
-            //DO NOT LEAVE TRAILING COMMA! 
+            
             string statement = "CREATE TABLE myTable(" +
                 "id INTEGER PRIMARY KEY NOT NULL, " +
                 "item_name TEXT, " +
                 "item_quantity INTEGER NULL, " +
                 "item_category TEXT NULL, " +
-                "added NUMERIC NOT NULL DEFAULT(CURRENT_DATE) " +
-                "expires NUMERIC, " +
-                "limit INTEGER NULL "+
+                "added NUMERIC NOT NULL DEFAULT(CURRENT_DATE), " +
+                "expires NUMERIC NULL, " +
+                "`limit` INTEGER NULL " +
                 ")";
 
             //Console.Beep();
