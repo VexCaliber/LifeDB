@@ -17,42 +17,55 @@ namespace LifeDB.Resources.Code
 
 
 
-    public class SqlDb
+    public static class SqlDb
     {
 
-        private static SQLiteConnection connection;
+        private static SQLiteConnection connection = Connect();
 
         public static SQLiteConnection Connect()
         {
 
             //new SQLiteConnection("Data Source=database.db; Version = 3; New = True; Compress = True;");
             //Data Source = file://LifeDB//Resources//Files//Db//myDatabase.db
-          
 
-            //SQLiteConfigDbOpsEnum liteConfigDbOpsEnum = new SQLiteConfigDbOpsEnum();
-
-            //SQLiteConnectionStringBuilder slcsb = new();
-            //slcsb.
-
-            //NOTE TO SELF: SET DEBUG EXECUTION TO THE LIFEDB directory
-            SQLiteConnection sqlite_conn = new SQLiteConnection("Data Source = /LifeDB//Resources//Files//Db//myDatabase.db; "); //+
-                                                                 //"SQLITE_USE_URI = 1" +
-                                                                // "Version = 3;" +
-                                                                 //"UseUTF16Encoding = true; " +
-                                                                 //"DatTimeFormat = UnixEpoch;" +
-                                                                // "New = True; " +
-                                                                // "Compress = True;");
+            Boolean genTable;
+            String exists;
+            if (File.Exists("..//LifeDB//Resources//Files//Db//myDatabase.db"))
+            {
+                exists = "New = False";
+                genTable = false;
+            }
+            else
+            {
+                exists = "New = True";
+                genTable = true;
+            }
             
+            //NOTE TO SELF: SET DEBUG EXECUTION TO THE LIFEDB directory --
+            //And ..// seemed to work...hopefully that sticks, but idk...pathing is tarded sometimes :: Note...dropping //lifedb won't work
+            SQLiteConnection sqlite_conn = new SQLiteConnection("Data Source = ..//LifeDB//Resources//Files//Db//myDatabase.db;" +
+                                                                 "SQLITE_USE_URI = 1" +
+                                                                 "Version = 3;" +
+                                                                 "UseUTF16Encoding = true; " +
+                                                                 "DateTimeFormat = UnixEpoch;" +
+                                                                 exists +
+                                                                 "Compress = True;");
+
+            
+
             // Open the connection:
             try
             {
                  sqlite_conn.Open();
+                 if (genTable == true) CreateDefaultTable(sqlite_conn);
                  Console.WriteLine("Connected!");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString() + " @SqlDb.Connect()");
+                 Console.WriteLine(e.ToString() + " @SqlDb.Connect()");
             }
+
+
 
             return sqlite_conn;
 
@@ -74,28 +87,41 @@ namespace LifeDB.Resources.Code
 
         ///
 
-        static void CreateDefaultTable(SQLiteConnection con)
+        private static void CreateDefaultTable(SQLiteConnection con)
         {
 
             SQLiteCommand command;
-            //string Createsql = "CREATE TABLE SampleTable(Col1 VARCHAR(20), Col2 INT)";
-            //string Createsql1 = "CREATE TABLE SampleTable1(Col1 VARCHAR(20), Col2 INT)";
-            //command = con.CreateCommand();
-            //command.CommandText = Createsql;
-            //command.ExecuteNonQuery();
-            //command.CommandText = Createsql1;
-            //command.ExecuteNonQuery();
 
-            string statement = "CREATE TABLE `myTable`(" +
-                "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
-                "`item_name` VARCHAR(256) NOT NULL," +
-                "`item_quantity` INT UNSIGNED NULL," +
-                "`item_category` VARCHAR(256) NULL," +
-                "`added` DATE NOT NULL DEFAULT (current_date())," +
-                "`expires` DATE NULL," +
-                "`limit` INT NULL," +
-                "PRIMARY KEY(`id`)," +
-                "UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)";
+            //So...SQLite has a different (loose) type system...the below is a gen'd mySql, the original plan (mySql commands aren't 100% compatible O.~ it's always somethin' isn't it)
+            /*
+                string statement = "CREATE TABLE `myTable`(" +
+                    "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
+                    "`item_name` VARCHAR(256) NOT NULL," +
+                    "`item_quantity` INT UNSIGNED NULL," +
+                    "`item_category` VARCHAR(256) NULL," +
+                    "`added` DATE NOT NULL DEFAULT (current_date())," +
+                    "`expires` DATE NULL," +
+                    "`limit` INT NULL," +
+                    "PRIMARY KEY(`id`)," +
+                    "UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)";
+                                                                         */
+            //id will auto-increment on missing/null vals...
+            //DO NOT LEAVE TRAILING COMMA! 
+            string statement = "CREATE TABLE myTable(" +
+                "id INTEGER PRIMARY KEY NOT NULL, " +
+                "item_name TEXT, " +
+                "item_quantity INTEGER NULL, " +
+                "item_category TEXT NULL, " +
+                "added NUMERIC NOT NULL DEFAULT(CURRENT_DATE) " +
+                "expires NUMERIC, " +
+                "limit INTEGER NULL "+
+                ")";
+
+            //Console.Beep();
+            //Console.Beep();
+            //Console.Beep();
+            //Console.Beep();
+
 
             //id, item_name, item_quantity, item_category, added, expires, limit
 
@@ -105,38 +131,12 @@ namespace LifeDB.Resources.Code
 
         }
 
-        /*
-        static void InsertData(SQLiteConnection conn)
-        {
-            SQLiteCommand sqlite_cmd;
-            sqlite_cmd = conn.CreateCommand();
-            
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable (Col1, Col2) VALUES('Test Text ', 1); ";
-            sqlite_cmd.ExecuteNonQuery();  
-         
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable (Col1, Col2) VALUES('Test1 Text1 ', 2); ";
-            sqlite_cmd.ExecuteNonQuery();   
-         
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable (Col1, Col2) VALUES('Test2 Text2 ', 3); ";
-            sqlite_cmd.ExecuteNonQuery();  
-         
-            sqlite_cmd.CommandText = "INSERT INTO SampleTable1 (Col1, Col2) VALUES('Test3 Text3 ', 3); ";
-            sqlite_cmd.ExecuteNonQuery();
-
-        }
-        */
-
 
         public static Boolean Add(SqlPacket sqlPacket)  
         {
             
             //item_name, item_quantity, item_category, added, expires, limit
 
-
-            //SqlString keys = new SqlString(new String("item_name,item_quantity,item_category,added,expires,limit"));
-            //SqlString values = PacketValuesParser(sqlPacket);
-
-            //tell me...i didn't need to convert all the string to sqlStrings >.< :: dude...
             try
             {
                 SQLiteCommand command;
@@ -246,270 +246,9 @@ namespace LifeDB.Resources.Code
 
         } 
 
-
-
-
-
-
-
-
-
-
-
-
-
-        /*
-
-        //Apologies to anyone who sees this...I'm still getting used to working with sharp...O.O i realize an IList<<,>> would've been the better choice to build but >.> what can ya' do?
-        public class SqlPacket
-        {
-            private string?         _item_name       = null;
-            private int?            _item_quantity   = null;
-            private string?         _item_category   = null;
-            private DateOnly?       _added           = null;
-            private DateOnly?       _expires         = null;
-            private int?            _limit           = null;
-
-
-            public string? item_name { get => _item_name; set => _item_name = value; }
-            public int? item_quantity { get => _item_quantity; set => _item_quantity = value; }
-            public string? item_category { get => _item_category; set => _item_category = value; }
-            public DateOnly? added { get => _added; set => _added = value; }
-            public DateOnly? expires { get => _expires; set => _expires = value; }
-            public int? limit { get => _limit; set => _limit = value; }
-
-        }
-
-        
-        public static SqlString PacketValuesParser(SqlPacket sqlPacket)
-        {
-
-            Object[] values = new object[] { sqlPacket.item_name, sqlPacket.item_quantity, sqlPacket.item_category, sqlPacket.added, sqlPacket.expires, sqlPacket.limit };
-
-            //If any date is actually set (not null), transform it to sqlstring and then to string; place in array
-            if (sqlPacket.added != null)
-            {              
-                values[3] = new SqlDateTime(sqlPacket.added.Value.Year, sqlPacket.added.Value.Month, sqlPacket.added.Value.Day).ToString();
-            }
-
-            if (sqlPacket.expires != null) {
-                values[4] = new SqlDateTime(sqlPacket.expires.Value.Year, sqlPacket.expires.Value.Month, sqlPacket.expires.Value.Day).ToString();
-            }
-
-
-           
-
-            
-            StringBuilder sb = new();
-            
-            //Hopefully, it will append 'null' as needed, but we may have to return here >.> :: this is more complex than I thought...so much variability...
-            //worst case scenario, i can just force the issue
-            for (int i = 0; i < values.Length; i++)
-            {
-                sb.Append(values[i]);
-                if (i != values.Length) sb.Append(',');
-            }
-
-
-            return new SqlString(sb.ToString());
-
-        }
-        
-
-
-        /*Please ignore the concentrated autism below >.> I..uhm...tend to think a little too imperatively O.o*/
-        //INSERT :: Settable>> item_name, item_quantity, item_category, added, expires, limit
-        /*
-        static Boolean Add(string item_name) 
-        {
-            try
-            {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable (item_name) VALUES ("+item_name+")";
-
-            }catch(Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name)");
-                return false;
-            }
-
-            return true;
-
-        }
-
-        static Boolean Add(string item_name, string item_quantity)
-        {
-            try
-            {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable (item_name, item_quantity) VALUES ("+item_name+","+item_quantity+")";
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name, item_quantity)");
-                return false;
-            }
-
-            return true;
-
-        }
-
-        static Boolean Add(string item_name, string item_quantity, string item_category)
-        {
-            try
-            {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable (item_name, item_quantity, item_category) VALUES ("+item_name+","+item_quantity+","+item_category+")";
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name, item_quantity, item_category)");
-                return false;
-            }
-
-            return true;
-
-        }
-
-        static Boolean Add(string item_name, string item_quantity, string item_category, DateOnly added)
-        {
-           
-            // YYYY/MM/DD
-            SqlDateTime SqlifiedDate = new SqlDateTime(added.Year, added.Month, added.Day);     
-
-            try
-            {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable (item_name, item_quantity, item_category, added) VALUES ("+item_name+","+item_quantity+","+item_category+","+SqlifiedDate+")";
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name, item_quantity, item_category, added)");
-                return false;
-            }
-
-            return true;
-
-        }
-
-        static Boolean Add(string item_name, string item_quantity, string item_category, DateOnly added, DateOnly expires)
-        {
-
-            // YYYY/MM/DD
-            SqlDateTime SqlifiedAddedDate = new SqlDateTime(added.Year, added.Month, added.Day);
-            SqlDateTime SqlifiedExpiresDate = new SqlDateTime(expires.Year, expires.Month, expires.Day);
-
-            try
-            {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable (item_name, item_quantity, item_category, added, expires) VALUES (" + item_name + "," + item_quantity + "," + item_category + "," + SqlifiedAddedDate + "," + SqlifiedExpiresDate + ")";
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name, item_quantity, item_category, added, expires)");
-                return false;
-            }
-
-            return true;
-
-        }
-
-        static Boolean Add(string item_name, string item_quantity, string item_category, DateOnly added, DateOnly expires, int limit)
-        {
-
-            // YYYY/MM/DD
-            SqlDateTime SqlifiedAddedDate = new SqlDateTime(added.Year, added.Month, added.Day);
-            SqlDateTime SqlifiedExpiresDate = new SqlDateTime(expires.Year, expires.Month, expires.Day);
-
-            try
-            {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable (item_name, item_quantity, item_category, added, expires, limit) VALUES (" + item_name + "," + item_quantity + "," + item_category + "," + SqlifiedAddedDate + "," + SqlifiedExpiresDate + "," + limit + ")";
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name, item_quantity, item_category, added, expires, limit)");
-                return false;
-            }
-
-            return true;
-
-        }
-
-        //ALT >> added is optional, but not null.  If not included, the db will auto gen this field...
-        //Side note: this is a really dumb way to do this >.> | all the other fields are optional, so this chaining is compounding...what is name isn't included, but everything else is?
-        //Why am I so autsy?  I really must do K/V pairs to ease this b/s  Let's forget I did this ;-)
-
-        static Boolean Add(string item_name, string item_quantity, string item_category, DateOnly expires, int limit)
-        {
-
-            // YYYY/MM/DD    
-            SqlDateTime SqlifiedExpiresDate = new SqlDateTime(expires.Year, expires.Month, expires.Day);
-
-            try
-            {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable (item_name, item_quantity, item_category, expires, limit) VALUES (" + item_name + "," + item_quantity + "," + item_category + "," + SqlifiedExpiresDate + "," + limit + ")";
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name, item_quantity, item_category, expires, limit)");
-                return false;
-            }
-
-            return true;
-
-        }
-
-        static Boolean Add(string item_name, string item_quantity, string item_category, int limit)
-        {
-
-            // YYYY/MM/DD    
-            
-
-            try
-            {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-
-                command.CommandText = "INSERT INTO myTable (item_name, item_quantity, item_category, limit) VALUES (" + item_name + "," + item_quantity + "," + item_category + "," + limit + ")";
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Add(item_name, item_quantity, item_category, limit)");
-                return false;
-            }
-
-            return true;
-
-        }
-        */
-
-        //==============================//
-         
        
     }
+
 
     //EXPERIMENTATION
     //Edit: Mmmmm, yeees...look at all my pokemon cards... (✿◕‿◕✿)
@@ -535,7 +274,7 @@ namespace LifeDB.Resources.Code
 
         public void Build(String[] pairs)
         {
-            //Was right to check this...length starts count at 1 in sharp
+            
             if(pairs.Length % 2 != 0)
             {
                 throw new FormatException("You must provide values as k,v,k,v :: if a value doesn't exist, pass null w/o quotes");
@@ -548,9 +287,10 @@ namespace LifeDB.Resources.Code
                k,v,k,v :: process
                                   */
 
-            for(int k = 0, v = k+1; v <= pairs.Length-1; k += 2) //REVIEW ME!!!
+            for(int k = 0, v = k+1; k <= pairs.Length-1; k += 2, v = k+1)
             {
                 Add(pairs[k], pairs[v]);
+                Console.WriteLine(pairs[k], pairs[v]);
             }
 
             Console.WriteLine("SqlPacket Build Successful! =)");
@@ -631,7 +371,7 @@ namespace LifeDB.Resources.Code
         public String GetKeyCSVString()
         {
             StringBuilder sb = new StringBuilder();
-            int counter = 0;
+            int counter = 1;
 
             foreach (KVP<String, String> pair in Mappings)
             {
@@ -647,7 +387,7 @@ namespace LifeDB.Resources.Code
         public String GetValueCSVString()
         {
             StringBuilder sb = new StringBuilder();
-            int counter = 0;
+            int counter = 1;
 
             foreach (KVP<String, String> pair in Mappings)
             {
