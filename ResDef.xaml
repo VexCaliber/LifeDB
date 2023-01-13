@@ -1,0 +1,78 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+   
+
+    <TableRow x:Key="RowA"
+                Background="White"
+                FontFamily="consolas"
+                FontSize="12">
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+
+    </TableRow>
+
+    <TableRow x:Key="RowB"
+                Background="WhiteSmoke"
+                FontFamily="consolas"
+                FontSize="12">
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+        <TableCell TextAlignment="Center">
+            <Paragraph></Paragraph>
+        </TableCell>
+
+
+    </TableRow>
+
+
+</ResourceDictionary>

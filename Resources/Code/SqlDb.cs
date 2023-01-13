@@ -13,9 +13,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 namespace LifeDB.Resources.Code
-{ 
-
-
+{
 
     public static class SqlDb
     {
@@ -40,7 +38,7 @@ namespace LifeDB.Resources.Code
                 exists = "New = True";
                 genTable = true;
             }
-            
+
             //NOTE TO SELF: SET DEBUG EXECUTION TO THE LIFEDB directory --
             //And ..// seemed to work...hopefully that sticks, but idk...pathing is tarded sometimes :: Note...dropping //lifedb won't work
             SQLiteConnection sqlite_conn = new SQLiteConnection("Data Source = ..//LifeDB//Resources//Files//Db//myDatabase.db;" +
@@ -51,18 +49,18 @@ namespace LifeDB.Resources.Code
                                                                  exists +
                                                                  "Compress = True;");
 
-            
+
 
             // Open the connection:
             try
             {
-                 sqlite_conn.Open();
-                 if (genTable == true) CreateDefaultTable(sqlite_conn);
-                 Console.WriteLine("Connected!");
+                sqlite_conn.Open();
+                if (genTable == true) CreateDefaultTable(sqlite_conn);
+                Console.WriteLine("Connected!");
             }
             catch (Exception e)
             {
-                 Console.WriteLine(e.ToString() + " @SqlDb.Connect()");
+                Console.WriteLine(e.ToString() + " @SqlDb.Connect()");
             }
 
 
@@ -85,7 +83,7 @@ namespace LifeDB.Resources.Code
 
         }
 
-        ///
+        //------------------------------//
 
         private static void CreateDefaultTable(SQLiteConnection con)
         {
@@ -106,7 +104,7 @@ namespace LifeDB.Resources.Code
                     "UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)";
                                                                          */
             //id will auto-increment on missing/null vals...
-            
+            //No trailing commas :: keywords (eg. limit) are escaped w/ backticks (`)
             string statement = "CREATE TABLE myTable(" +
                 "id INTEGER PRIMARY KEY NOT NULL, " +
                 "item_name TEXT, " +
@@ -132,9 +130,9 @@ namespace LifeDB.Resources.Code
         }
 
 
-        public static Boolean Add(SqlPacket sqlPacket)  
+        public static Boolean Add(SqlPacket sqlPacket)
         {
-            
+
             //item_name, item_quantity, item_category, added, expires, limit
 
             try
@@ -142,8 +140,8 @@ namespace LifeDB.Resources.Code
                 SQLiteCommand command;
                 command = SqlDb.connection.CreateCommand();
 
-                command.CommandText = "INSERT INTO myTable ("+sqlPacket.GetKeyCSVString()+") " +
-                                                    "VALUES ("+sqlPacket.GetValueCSVString()+")";
+                command.CommandText = "INSERT INTO myTable (" + sqlPacket.GetKeyCSVString() + ") " +
+                                                    "VALUES (" + sqlPacket.GetValueCSVString() + ")";
 
                 command.ExecuteNonQuery();
 
@@ -155,57 +153,57 @@ namespace LifeDB.Resources.Code
             }
 
             return true;
-            
+
         }
 
-        
+
         public static Boolean Edit(SqlPacket sqlPacket)
         {
 
             var keys = sqlPacket.GetKeys();
             var values = sqlPacket.GetValues();
 
-            Func<String, String, String> MergeIdAssigned = (s1,s2) => s1 + " = " + s2;
+            Func<String, String, String> MergeIdAssigned = (s1, s2) => s1 + " = " + s2;
             Func<String, String, String> MergilizeAssignments = (s1, s2) => s1 + " = '" + s2 + "', ";
             Func<String, String, String> MergilizeAssignmentsWOTrailingComma = (s1, s2) => s1 + " = '" + s2 + "' ";
 
-            String ASSIGNED = ""; 
+            String ASSIGNED = "";
             StringBuilder ASSIGNMENTS = new();
 
             //Brain says this is ok...so I'm going with it...review me!
-            int adjustedPairCount = ((keys.Count()-1 + values.Count()-1) / 2);
+            int adjustedPairCount = ((keys.Count() - 1 + values.Count() - 1) / 2);
             for (int i = 0; i != adjustedPairCount; i++)
             {
                 //SET ContactName = 'Alfred Schmidt', City = 'Frankfurt'
-                
+
                 if (i == 0)
                 {
-                    ASSIGNED = MergeIdAssigned(keys[i], values[i]); 
+                    ASSIGNED = MergeIdAssigned(keys[i], values[i]);
                     continue;
                 }
 
-                if (i != adjustedPairCount - 1) 
+                if (i != adjustedPairCount - 1)
                     ASSIGNMENTS.Append(MergilizeAssignments(keys[i], values[i]));
-                else                            
+                else
                     ASSIGNMENTS.Append(MergilizeAssignmentsWOTrailingComma(keys[i], values[i]));
 
-                
+
 
             }
 
             //WHERE can take a number or a 'string', we need to test parse the first value...
             //we won't need it for the basic usage, but for future extentions that will use something else...we must 
             //but sql commands are strings...so it should parse it on its end...I'll skip and we'll see what happens
-            
+
             try
             {
                 SQLiteCommand command;
                 command = SqlDb.connection.CreateCommand();
                 // Count() starts at 1 :: Index[] starts at 0 
                 // var k = Mergilizer(keys[0], values[0]);
-               
-                command.CommandText = "UPDATE myTable " + "SET " + ASSIGNMENTS + "WHERE " + ASSIGNED;                                   
-                                  
+
+                command.CommandText = "UPDATE myTable " + "SET " + ASSIGNMENTS + "WHERE " + ASSIGNED;
+
             }
             catch (Exception e)
             {
@@ -233,7 +231,7 @@ namespace LifeDB.Resources.Code
             try
             {
                 SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();                
+                command = SqlDb.connection.CreateCommand();
                 command.CommandText = "DELETE FROM myTable WHERE " + ASSIGNED;
             }
             catch (Exception e)
@@ -244,26 +242,59 @@ namespace LifeDB.Resources.Code
 
             return true;
 
-        } 
+        }
 
-       
+        //------------------------------//
+
+        //Conv_Methods
+        public static void Pump(params String[] kvps)
+        {
+
+            SqlDb.Add(new SqlPacket().Build(kvps));
+
+        }
+
+        public static void Pump(Enum Command, params String[] kvps)
+        {
+            if (Command.Equals(SqlDb.Command.add))
+                SqlDb.Add(new SqlPacket().Build(kvps));
+
+            if (Command.Equals(SqlDb.Command.edit))
+                SqlDb.Edit(new SqlPacket().Build(kvps));
+
+            if (Command.Equals(SqlDb.Command.remove))
+                SqlDb.Remove(new SqlPacket().Build(kvps));
+
+        }
+
+        public enum Command {
+            add,
+            edit,
+            remove
+        }
+
+
     }
+
 
 
     //EXPERIMENTATION
     //Edit: Mmmmm, yeees...look at all my pokemon cards... (✿◕‿◕✿)
     public class SqlPacket
     {
+       
         //need a higher order system for these arbitrary nums 
         //long SqlPacketId;
         //long SqlPacketVersion;
 
         IList<KVP<String, String>> Mappings = new List<KVP<String, String>>(); 
     
+
         public SqlPacket() 
         { 
             //SqlPacketId++; //Make this & class threadsafe
         }  
+
 
         public void Add(String key, String? value)
         {
@@ -272,7 +303,8 @@ namespace LifeDB.Resources.Code
              
         }
 
-        public void Build(String[] pairs)
+
+        public SqlPacket Build(String[] pairs)
         {
             
             if(pairs.Length % 2 != 0)
@@ -295,8 +327,11 @@ namespace LifeDB.Resources.Code
 
             Console.WriteLine("SqlPacket Build Successful! =)");
 
+            return this;
+
         }
-       
+
+
         public void RemoveKey(String key)
         {
             var copy = Copy(Mappings);
@@ -312,6 +347,7 @@ namespace LifeDB.Resources.Code
             }
 
         }
+
 
         public void RemoveValue(String value)
         {
@@ -329,6 +365,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         public IList<KVP<String,String>> Copy(IList<KVP<String,String>> map) 
         {
 
@@ -343,6 +380,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         public IList<String> GetKeys()
         {
             IList<String> KeyList = new List<String>();
@@ -355,18 +393,31 @@ namespace LifeDB.Resources.Code
             return KeyList;
 
         }
-      
+
+
+        // sb.Append('\''); values need their single quotes...REVIEW ME! -- Using if's, without quotes for nulls, it'll throw in Sql
         public IList<String> GetValues()
         {
             IList<String> ValueList = new List<String>();
+            StringBuilder sb = new();
 
             foreach (KVP<String, String> pair in Mappings)
             {
-                ValueList.Add(pair.GetValue());
+                sb.Append('\'');
+
+                if (pair.GetValue() == null)
+                    sb.Append(' ');
+                else
+                    sb.Append(pair.GetValue());
+                
+                sb.Append('\'');
+
+                ValueList.Add(sb.ToString());
             }
 
             return ValueList;
         }
+
 
         public String GetKeyCSVString()
         {
@@ -384,6 +435,8 @@ namespace LifeDB.Resources.Code
 
         }
 
+
+        // sb.Append('\''); values need their single quotes...REVIEW ME! -- Using if's, without quotes for nulls, it'll throw in Sql
         public String GetValueCSVString()
         {
             StringBuilder sb = new StringBuilder();
@@ -391,7 +444,15 @@ namespace LifeDB.Resources.Code
 
             foreach (KVP<String, String> pair in Mappings)
             {
-                sb.Append(pair.GetValue());
+                sb.Append('\'');
+
+                if (pair.GetValue() == null)
+                    sb.Append(' ');
+                else
+                    sb.Append(pair.GetValue());
+
+                sb.Append('\'');
+
                 if (counter < Mappings.Count()) sb.Append(',');
                 counter++;
             }
@@ -407,6 +468,7 @@ namespace LifeDB.Resources.Code
         //[could possibly require null keys after the first to signify 1 key many vals]*/
 
     }
+
 
     public class KVP<K,V>
     {

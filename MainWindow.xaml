@@ -14,9 +14,8 @@
         AllowsTransparency="True"
         >
 
-
     <Grid>
-
+ 
         <!--TitleBar-->
         <Grid.ColumnDefinitions>
 
