@@ -4,11 +4,17 @@
              xmlns:local="clr-namespace:LifeDB"
              StartupUri="MainWindow.xaml">
     
-    <Application.Resources>
-        
-        <ResourceDictionary Source="ResDef.xaml" />
     
+    <Application.Resources>
+
+        <ResourceDictionary Source="ResDef.xaml">
+
+     
+        </ResourceDictionary>
+
     </Application.Resources>
+
+    
 
 
 </Application>
