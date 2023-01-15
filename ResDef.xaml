@@ -3,9 +3,9 @@
                    
 
     <TableRow x:Key="RowA"
-                Background="White"
-                FontFamily="consolas"
-                FontSize="12">
+              Background="White"
+              FontFamily="consolas"
+              FontSize="12">
 
         
         <TableCell TextAlignment="Center">
@@ -40,36 +40,36 @@
     </TableRow>
 
     <TableRow x:Key="RowB"
-                Background="WhiteSmoke"
-                FontFamily="consolas"
-                FontSize="12">
+              Background="WhiteSmoke"
+              FontFamily="consolas"
+              FontSize="12">
 
         <TableCell TextAlignment="Center">
-            <Paragraph></Paragraph>
+            <!-- <Paragraph></Paragraph> -->
         </TableCell>
 
         <TableCell TextAlignment="Center">
-            <Paragraph></Paragraph>
+            <!-- <Paragraph></Paragraph> -->
         </TableCell>
 
         <TableCell TextAlignment="Center">
-            <Paragraph></Paragraph>
+            <!-- <Paragraph></Paragraph> -->
         </TableCell>
 
         <TableCell TextAlignment="Center">
-            <Paragraph></Paragraph>
+            <!-- <Paragraph></Paragraph> -->
         </TableCell>
 
         <TableCell TextAlignment="Center">
-            <Paragraph></Paragraph>
+            <!-- <Paragraph></Paragraph> -->
         </TableCell>
 
         <TableCell TextAlignment="Center">
-            <Paragraph></Paragraph>
+            <!-- <Paragraph></Paragraph> -->
         </TableCell>
 
         <TableCell TextAlignment="Center">
-            <Paragraph></Paragraph>
+            <!-- <Paragraph></Paragraph> -->
         </TableCell>
 
 
