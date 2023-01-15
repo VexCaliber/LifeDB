@@ -7,10 +7,10 @@
     
     <Application.Resources>
 
-        <ResourceDictionary Source="ResDef.xaml">
+        <ResourceDictionary Source="ResDef.xaml"/>
 
-     
-        </ResourceDictionary>
+
+
 
     </Application.Resources>
 

@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Xml;
-using System.Xml.Serialization;
+
 
 namespace LifeDB.Resources.Code
 {
@@ -19,16 +15,21 @@ namespace LifeDB.Resources.Code
     static class TableViewController
     {
 
+
         private static Table table;
-        
+
+
         private static TableRowGroupCollection rowGroups;
         private static int currentRow;                   
         
         private static TableColumnCollection tableColumns;
+        private static int totalColumns = tableColumns.Count();
         private static int currentColumn;
 
         private static TableRow rowTemplateA = (TableRow)Application.Current.Resources["RowA"];
         private static TableRow rowTemplateB = (TableRow)Application.Current.Resources["RowB"];
+
+
 
 
         private static void GenerateRow(List<String> values)
@@ -38,7 +39,7 @@ namespace LifeDB.Resources.Code
             if (!(currentRow % 2 == 0))//currentRow % 2 == 0
             {
 
-                table.RowGroups[0].Rows.Add(rowTemplateA);
+                table.RowGroups[0].Rows.Add(GenerateGenericRowA());
                 currentRow++;
                 var cells = table.RowGroups[0].Rows[currentRow].Cells.ToList();
                 
@@ -54,8 +55,7 @@ namespace LifeDB.Resources.Code
             else
             {
 
-                table.RowGroups[0].Rows.Add(rowTemplateB);
-                
+                table.RowGroups[0].Rows.Add(GenerateGenericRowB());
                 currentRow++;
                 var cells = table.RowGroups[0].Rows[currentRow].Cells.ToList();
 
@@ -82,10 +82,59 @@ namespace LifeDB.Resources.Code
             currentRow = 0;
             currentColumn = 0;
 
-            GenerateRow(new List<string> { "a", "b", "c", "d", "e", "f", });
-            GenerateRow(new List<string> { "b", "b", "c", "d", "e", "f", });
-            GenerateRow(new List<string> { "c", "b", "c", "d", "e", "f", });
 
+
+            //GenerateRow(new List<string> { "a", "b", "c", "d", "e", "f", });
+            //GenerateRow(new List<string> { "b", "b", "c", "d", "e", "f", });
+            //GenerateRow(new List<string> { "c", "b", "c", "d", "e", "f", });
+
+
+        }
+
+        ///
+
+        /* So...I broke down and went imperative with it...instead of creating rows in ResDef, I should've just created styles.
+         * I don't know if there's a work around...but it seems that using the keys in the dictionary (being vars, not objs)
+         * does generate conflicts.
+         */
+
+        private static TableRow GenerateGenericRowA()
+        {
+
+            TableRow tr = new();
+
+            for (int i = 0; i < totalColumns - 1; i++)
+            {
+                TableCell tc = new TableCell();
+                tc.TextAlignment = TextAlignment.Center;
+                tr.Cells.Add(tc);
+            }
+
+            tr.Background = Brushes.White;
+            tr.FontFamily = new FontFamily("consolas");
+            tr.FontSize = 12;
+
+            return tr;
+
+        }
+
+        private static TableRow GenerateGenericRowB()
+        {
+
+            TableRow tr = new();
+
+            for (int i = 0; i < totalColumns - 1; i++)
+            {
+                TableCell tc = new TableCell();
+                tc.TextAlignment = TextAlignment.Center;
+                tr.Cells.Add(tc);
+            }
+
+            tr.Background = Brushes.WhiteSmoke;
+            tr.FontFamily = new FontFamily("consolas");
+            tr.FontSize = 12;
+
+            return tr;
 
         }
 
