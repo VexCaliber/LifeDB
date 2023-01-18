@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
+using System.Data.SQLite;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
@@ -12,23 +14,51 @@ namespace LifeDB.Resources.Code
 
     //add populate method for startup as a conv_method
 
-    static class TableViewController
+    public static class TableViewController
     {
 
 
         private static System.Windows.Documents.Table table;
 
+        //Pretend these 2 don't exist...
+        //private static TableRowGroupCollection rowGroups;
+        //private static TableColumnCollection tableColumns; 
 
-        private static TableRowGroupCollection rowGroups;
-        private static int currentRow;                   
+        private static int currentRow = 0;
+        //private static int maxColumns = tableColumns.Count; //This is the problem line...
         
-        private static TableColumnCollection tableColumns;
 
 
         //private static TableRow rowTemplateA = (TableRow)Application.Current.Resources["RowA"];
         //private static TableRow rowTemplateB = (TableRow)Application.Current.Resources["RowB"];
 
 
+
+        public static void Generate()
+        {
+
+            SQLiteDataReader reader = SqlDb.SelectAll();
+
+            var columns = reader.FieldCount;
+            
+            List<String> values = new List<String>();
+            
+            while(reader.Read()) //REVIEW ME!
+            {
+
+                for (int i = 0; i < columns; i++)
+                {
+                    values.Add(reader.GetValue(i).ToString()); //reader.GetString(i)
+                }
+
+                GenerateRow(values);
+
+                values.Clear();
+
+            }
+
+
+        }
 
 
         private static void GenerateRow(List<String> values)
@@ -42,13 +72,19 @@ namespace LifeDB.Resources.Code
                 currentRow++;
                 var cells = table.RowGroups[0].Rows[currentRow].Cells.ToList();
                 
-
-                for(int i = 0; i < cells.Count-1; i++)
-                {
-                    //Found the answer...but god this is still awful...I'll do something about it...
-                    table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Clear();
+                //clean ze row ///NO LONGER NEEDED HERE ::: MOVE LATER
+                //for(int i = 0; i < cells.Count-1; i++) table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Clear();
+                
+                //assign the vals 
+                for(int i = 0; i < cells.Count - 1; i++) 
+                { 
+                    
                     table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Add(new Paragraph(new Run(values[i])));
-                }
+                
+                }   
+                    
+                    
+                
 
             }
             else
@@ -61,7 +97,7 @@ namespace LifeDB.Resources.Code
                 for (int i = 0; i < cells.Count - 1; i++)
                 {
                     //Found the answer...but god this is still awful...I'll do something about it...
-                    table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Clear();
+                    //table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Clear();
                     table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Add(new Paragraph(new Run(values[i])));
                 }
 
@@ -73,20 +109,10 @@ namespace LifeDB.Resources.Code
 
         public static void Init(System.Windows.Documents.Table t)
         {
-            //try
-            //{
+         
                 table = t;
-                rowGroups = t.RowGroups;
-                tableColumns = t.Columns;
-                currentRow = 0;
                 
-            //}
-            //catch(Exception e) 
-            //{
-                //e.ToString();   
-            //}
-
-
+               
             //GenerateRow(new List<string> { "a", "b", "c", "d", "e", "f", });
             //GenerateRow(new List<string> { "b", "b", "c", "d", "e", "f", });
             //GenerateRow(new List<string> { "c", "b", "c", "d", "e", "f", });
@@ -106,7 +132,7 @@ namespace LifeDB.Resources.Code
 
             TableRow tr = new();
 
-            for (int i = 0; i < tableColumns.Count - 1; i++)
+            for (int i = 0; i < table.Columns.Count - 1; i++)
             {
                 TableCell tc = new TableCell();
                 tc.TextAlignment = TextAlignment.Center;
@@ -126,7 +152,7 @@ namespace LifeDB.Resources.Code
 
             TableRow tr = new();
 
-            for (int i = 0; i < tableColumns.Count - 1; i++)
+            for (int i = 0; i < table.Columns.Count - 1; i++)
             {
                 TableCell tc = new TableCell();
                 tc.TextAlignment = TextAlignment.Center;

@@ -204,6 +204,8 @@ namespace LifeDB.Resources.Code
 
                 command.CommandText = "UPDATE myTable " + "SET " + ASSIGNMENTS + "WHERE " + ASSIGNED;
 
+                command.ExecuteNonQuery();
+
             }
             catch (Exception e)
             {
@@ -233,6 +235,7 @@ namespace LifeDB.Resources.Code
                 SQLiteCommand command;
                 command = SqlDb.connection.CreateCommand();
                 command.CommandText = "DELETE FROM myTable WHERE " + ASSIGNED;
+                command.ExecuteNonQuery();
             }
             catch (Exception e)
             {
@@ -241,6 +244,27 @@ namespace LifeDB.Resources.Code
             }
 
             return true;
+
+        }
+
+        //Reserved for testing & TableViewController
+        public static SQLiteDataReader SelectAll()
+        {
+           
+            try
+            {
+                SQLiteCommand command;
+                command = SqlDb.connection.CreateCommand();
+                command.CommandText = "Select * from myTable";
+                SQLiteDataReader DataReader = command.ExecuteReader();
+                return DataReader;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString() + " @SqlDB.Edit(SqlPacket sqlPacket)");
+            }
+
+            return null;
 
         }
 
@@ -270,7 +294,7 @@ namespace LifeDB.Resources.Code
         public enum Command {
             add,
             edit,
-            remove
+            remove   
         }
 
 
