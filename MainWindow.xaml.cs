@@ -1,6 +1,7 @@
 ﻿using LifeDB.Resources.Code;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using static LifeDB.Resources.Code.SqlDb;
 
@@ -18,13 +19,14 @@ namespace LifeDB
 
             SqlDb.Connect();
 
-            TableViewController.Init(this.myTable);
+            Thread.Sleep(5000);
+            TableViewController.Init(myTable);
 
             //| id | item_name | item_quantity | item_category | added | expires | limit |
             
             
             
-            SqlDb.Pump("id","1","item_name",null);
+            //SqlDb.Pump("id","1","item_name",null);
             //Pump(Command.add, "item_name", "Bob Bobson Statue");
            // Pump(Command.add, "item_name", "Ron Ronson Statue","item_category","statues");
 

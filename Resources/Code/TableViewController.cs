@@ -1,11 +1,11 @@
-﻿using System;
+﻿
+
+using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-
 
 namespace LifeDB.Resources.Code
 {
@@ -16,18 +16,17 @@ namespace LifeDB.Resources.Code
     {
 
 
-        private static Table table;
+        private static System.Windows.Documents.Table table;
 
 
         private static TableRowGroupCollection rowGroups;
         private static int currentRow;                   
         
         private static TableColumnCollection tableColumns;
-        private static int totalColumns = tableColumns.Count();
-        private static int currentColumn;
 
-        private static TableRow rowTemplateA = (TableRow)Application.Current.Resources["RowA"];
-        private static TableRow rowTemplateB = (TableRow)Application.Current.Resources["RowB"];
+
+        //private static TableRow rowTemplateA = (TableRow)Application.Current.Resources["RowA"];
+        //private static TableRow rowTemplateB = (TableRow)Application.Current.Resources["RowB"];
 
 
 
@@ -72,16 +71,20 @@ namespace LifeDB.Resources.Code
         }
 
 
-        public static void Init(Table t)
+        public static void Init(System.Windows.Documents.Table t)
         {
-           
-            table = t;
-            rowGroups = t.RowGroups;
-            tableColumns = t.Columns;
-
-            currentRow = 0;
-            currentColumn = 0;
-
+            //try
+            //{
+                table = t;
+                rowGroups = t.RowGroups;
+                tableColumns = t.Columns;
+                currentRow = 0;
+                
+            //}
+            //catch(Exception e) 
+            //{
+                //e.ToString();   
+            //}
 
 
             //GenerateRow(new List<string> { "a", "b", "c", "d", "e", "f", });
@@ -103,7 +106,7 @@ namespace LifeDB.Resources.Code
 
             TableRow tr = new();
 
-            for (int i = 0; i < totalColumns - 1; i++)
+            for (int i = 0; i < tableColumns.Count - 1; i++)
             {
                 TableCell tc = new TableCell();
                 tc.TextAlignment = TextAlignment.Center;
@@ -123,7 +126,7 @@ namespace LifeDB.Resources.Code
 
             TableRow tr = new();
 
-            for (int i = 0; i < totalColumns - 1; i++)
+            for (int i = 0; i < tableColumns.Count - 1; i++)
             {
                 TableCell tc = new TableCell();
                 tc.TextAlignment = TextAlignment.Center;
