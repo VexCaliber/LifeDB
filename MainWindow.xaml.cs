@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Drawing;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 using System.Xml.XPath;
 using static LifeDB.Resources.Code.SqlDb;
 
@@ -34,10 +36,11 @@ namespace LifeDB
             //SqlDb.Pump("item_name", "smokes", "item_quantity", "25");
             //SqlDb.Pump("item_name", "glorius resumes", "item_quantity", "9001");
             SqlDb.Pump("id", "4", "item_name", "rocket", "item_quantity", "69");
+            SqlDb.Pump("item_name", "epic resumes", "item_quantity", "69", "item_category", "paperwork", "added", new DateOnly(day:12, month:6, year: 2020).ToString());
 
             //var x = SqlDb.SelectAll();
 
-            TableViewController.Generate();
+            TableViewController.Generate(); //needs a thread!
             
            // while (true)//x.Read()
           //  {
@@ -57,6 +60,17 @@ namespace LifeDB
 
 
 
+        }
+
+        private void MoveWindow(object sender, MouseButtonEventArgs e)
+        {
+            //if (Mouse.LeftButton == MouseButtonState.Pressed) //e.ChangedButton == MouseButton.Left
+            //    this.DragMove();
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.DragMove();
+                e.Handled = true;
+            }
         }
 
         private void MinWindow(object sender, RoutedEventArgs e)
@@ -80,6 +94,37 @@ namespace LifeDB
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void MoveWindow(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ADD_SUBMIT_EXECUTE(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //must add default space? :: Edit it have pump return a bool...use the bool the set the button pass/fail color
+                Pump(Command.add, ADD_ID.Content.ToString(), ADD_ID_VALUE.Text.ToString(), 
+                                  ADD_NAME.Content.ToString(), ADD_NAME_VALUE.Text.ToString(),
+                                  ADD_QUANT.Content.ToString(), ADD_QUANT_VALUE.Text.ToString(),
+                                  ADD_CAT.Content.ToString(), ADD_CAT_VALUE.Text.ToString(),
+                                  ADD_ADDED.Content.ToString(), ADD_ADDED_VALUE.Text.ToString(),
+                                  ADD_EXPIRES.Content.ToString(), ADD_EXPIRES_VALUE.Text.ToString(),
+                                  ADD_LIMIT.Content.ToString(), ADD_LIMIT_VALUE.Text.ToString());
+
+            }
+            catch(Exception ex)
+            {
+                ADD_SUBMIT.Background = System.Windows.Media.Brushes.Red;
+                USER_CONSOLE.Clear();
+                USER_CONSOLE.Text = ex.ToString();
+            }
+
+            ADD_SUBMIT.Background = System.Windows.Media.Brushes.LightGreen;
+            //need a call to update table!
+
         }
     }
 

@@ -247,6 +247,62 @@ namespace LifeDB.Resources.Code
 
         }
 
+        //DANGER -- UNSANITIZED INPUT
+        public static Boolean Run(String userCommand)
+        {
+
+            if (userCommand == null | userCommand == " ") { return false; }
+
+            if(!userCommand.Contains("SELECT") | !userCommand.Contains("select"))  
+            {
+                try
+                {
+                    SQLiteCommand command;
+                    command = SqlDb.connection.CreateCommand();
+
+                    command.CommandText = userCommand;
+
+                    command.ExecuteNonQuery();
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString() + " @SqlDB.Run()");
+                    return false;
+                }
+
+                //need to update table!
+                return true;
+
+            }
+            else 
+            {
+
+                try
+                {
+                    SQLiteCommand command;
+                    command = SqlDb.connection.CreateCommand();
+
+                    command.CommandText = userCommand;
+
+                    command.ExecuteReader(); //I guess this will work...dunno?
+                    
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString() + " @SqlDB.Run()");
+                    return false;
+                }
+
+                //need to update table!
+                return true;
+
+            }
+
+
+        }
+
         //Reserved for testing & TableViewController
         public static SQLiteDataReader SelectAll()
         {
@@ -267,6 +323,8 @@ namespace LifeDB.Resources.Code
             return null;
 
         }
+
+        
 
         //------------------------------//
 

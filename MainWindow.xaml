@@ -8,12 +8,13 @@
         Title="LifeDB" 
         Height="450" 
         Width="800"
+        MinHeight="400"
+        MinWidth="500"
         WindowStyle="None"
         Background="Beige"
         ResizeMode="CanResizeWithGrip" 
-        AllowsTransparency="True"
-        >
-
+        AllowsTransparency="True">
+        
     <Grid>
  
         <!--TitleBar-->
@@ -30,10 +31,6 @@
 
             <RowDefinition Height="24px"/>
             <RowDefinition Height="*" />
-            <!--<RowDefinition Height="*"/>-->
-            <!--<RowDefinition Height="*"/>-->
-
-
 
         </Grid.RowDefinitions>
 
@@ -48,11 +45,28 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
+                
             </Grid.ColumnDefinitions>
+
+            <Button x:Name="MOVE_BUTTON"
+                    PreviewMouseDown="MoveWindow"
+                    ClickMode="Press"
+                    Grid.Column="0"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    FontFamily="Modern No. 20"
+                    FontWeight="Bold"
+                    Background="Gold"
+                    BorderBrush="Gold"
+                    FontSize="20" 
+                    Content="#"
+                    />
+            
 
             <Button x:Name="MIN_BUTTON"
                     Click="MinWindow"
-                    Grid.Column="0"
+                    Grid.Column="1"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     FontFamily="Modern No. 20"
@@ -66,7 +80,7 @@
 
             <Button x:Name="MAX_BUTTON" 
                     Click="MaxWindow"
-                    Grid.Column="1"
+                    Grid.Column="2"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     FontFamily="Modern No. 20"
@@ -80,7 +94,7 @@
 
             <Button x:Name="CLOSE_BUTTON"
                     Click="CloseWindow"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     VerticalAlignment="Stretch"
                     HorizontalAlignment="Stretch"
                     FontFamily="Modern No. 20"
@@ -100,7 +114,7 @@
                    FontWeight="Bold"
                    FontStyle="Italic" 
                    FontSize="20"
-                   Text="LifeDB"/>
+                   Text="LifeDB "/>
 
         <Button Grid.Column="1"
                    Grid.Row="0"
@@ -113,7 +127,7 @@
                    FontSize="20"
                    Background="Gold" 
                    BorderBrush="Gold" 
-                   Content="Stock"/>
+                   Content="Stock "/>
 
         <Button Grid.Column="2"
                 Grid.Row="0"
@@ -126,7 +140,7 @@
                 FontSize="20"
                 Background="Gold" 
                 BorderBrush="Gold"
-                Content="Recommendations"/>
+                Content="Intel "/>
         <!--/TitleBar-->
 
 
@@ -362,7 +376,7 @@
             <!--/ZE_TABLE!-->
             
             
-            <TabControl Grid.Row="1" Height="124" SelectedIndex="0">
+            <TabControl Grid.Row="1" Height="124" SelectedIndex="0" VerticalContentAlignment="Center">
 
                 <TabItem Header="Add">
 
@@ -379,12 +393,31 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
+                        <Label x:Name="ADD_ID" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="id"/>
+                        <Label x:Name="ADD_NAME" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_name"/>
+                        <Label x:Name="ADD_QUANT" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_quantity"/>
+                        <Label x:Name="ADD_CAT" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_category"/>
+                        <Label x:Name="ADD_ADDED" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="added"/>
+                        <Label x:Name="ADD_EXPIRES" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="expires"/>
+                        <Label x:Name="ADD_LIMIT" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="limit"/>
+
+                        <TextBox x:Name="ADD_ID_VALUE" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="ADD_NAME_VALUE" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="ADD_QUANT_VALUE" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="ADD_CAT_VALUE" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="ADD_ADDED_VALUE" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="ADD_EXPIRES_VALUE" Grid.Row="2" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="ADD_LIMIT_VALUE" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+
+                        <Button x:Name="ADD_SUBMIT" Click="ADD_SUBMIT_EXECUTE" Grid.Row="4" Grid.Column="3" BorderBrush="Black" BorderThickness="1" FontFamily="consolas" FontSize="14" Content="Submit"/>
 
                     </Grid>
 
@@ -465,7 +498,8 @@
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
 
-            <TextBlock 
+            <TextBlock
+                x:Name="ARROW_PROMPT"
                 Grid.Column="1"
                 Grid.Row="1"
                 Grid.ColumnSpan="1"
@@ -503,7 +537,7 @@
                 FontFamily="Ink Free"
                 FontSize="20"    
                 FontWeight="Bold" 
-                Text="Random Words to check success of console...seems to be fine No.20"              
+                Text=""              
                 
              />
             

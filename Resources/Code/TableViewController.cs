@@ -61,6 +61,29 @@ namespace LifeDB.Resources.Code
         }
 
 
+        
+
+
+        public static void Init(System.Windows.Documents.Table t)
+        {
+         
+                table = t;
+                
+               
+            //GenerateRow(new List<string> { "a", "b", "c", "d", "e", "f", });
+            //GenerateRow(new List<string> { "b", "b", "c", "d", "e", "f", });
+            //GenerateRow(new List<string> { "c", "b", "c", "d", "e", "f", });
+
+
+        }
+
+        ///
+
+        /* So...I broke down and went imperative with it...instead of creating rows in ResDef, I should've just created styles.
+         * I don't know if there's a work around...but it seems that using the keys in the dictionary (being vars, not objs)
+         * does generate conflicts.
+         */
+
         private static void GenerateRow(List<String> values)
         {
 
@@ -105,27 +128,6 @@ namespace LifeDB.Resources.Code
 
 
         }
-
-
-        public static void Init(System.Windows.Documents.Table t)
-        {
-         
-                table = t;
-                
-               
-            //GenerateRow(new List<string> { "a", "b", "c", "d", "e", "f", });
-            //GenerateRow(new List<string> { "b", "b", "c", "d", "e", "f", });
-            //GenerateRow(new List<string> { "c", "b", "c", "d", "e", "f", });
-
-
-        }
-
-        ///
-
-        /* So...I broke down and went imperative with it...instead of creating rows in ResDef, I should've just created styles.
-         * I don't know if there's a work around...but it seems that using the keys in the dictionary (being vars, not objs)
-         * does generate conflicts.
-         */
 
         private static TableRow GenerateGenericRowA()
         {
