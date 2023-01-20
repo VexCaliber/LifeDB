@@ -17,6 +17,11 @@ namespace LifeDB.Resources.Code
 
     public static class SqlDb
     {
+        public static int lastCount { get; private set; }
+
+
+
+        //------------------------------//
 
         private static SQLiteConnection connection = Connect();
 
@@ -267,7 +272,7 @@ namespace LifeDB.Resources.Code
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString() + " @SqlDB.Run()");
+                    Console.WriteLine(e.ToString() + " @SqlDB.Run(String userCommand)");
                     return false;
                 }
 
@@ -291,7 +296,7 @@ namespace LifeDB.Resources.Code
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString() + " @SqlDB.Run()");
+                    Console.WriteLine(e.ToString() + " @SqlDB.Run(String userCommand)");
                     return false;
                 }
 
@@ -317,14 +322,73 @@ namespace LifeDB.Resources.Code
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString() + " @SqlDB.Edit(SqlPacket sqlPacket)");
+                Console.WriteLine(e.ToString() + " @SqlDB.SelectAll()");
             }
 
             return null;
 
         }
 
-        
+        public static void DBCount()
+        {
+
+            try
+            {
+                SQLiteCommand command;
+                command = SqlDb.connection.CreateCommand();
+                command.CommandText = "Select COUNT (id) from myTable";
+                SQLiteDataReader DataReader = command.ExecuteReader();
+                DataReader.Read(); //Result sets start at 0 location, must be read once to tick to first result/row :: may actually be unnecessary here, but Sqlite is a bit screwy so...
+                lastCount = DataReader.GetInt32(1);
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString() + " @SqlDB.DBCount()");
+            }
+
+        }
+
+        //BETWEEN OPERATOR SHOULD BE INCLUSIVE/INCLUSIVE
+        public static SQLiteDataReader GetIdRange(int startId, int endId)
+        {
+
+            try
+            {
+                SQLiteCommand command;
+                command = SqlDb.connection.CreateCommand();
+                command.CommandText = "SELECT * from myTable WHERE id BETWEEN "+startId+" AND "+endId;
+                SQLiteDataReader DataReader = command.ExecuteReader();
+                return DataReader;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString() + " @SqlDB.GetIdRange(int startId, int endId)");
+            }
+
+            return null;
+
+        }
+
+        public static SQLiteDataReader GetVisibleIdRange()
+        {
+
+            try
+            {
+                SQLiteCommand command;
+                command = SqlDb.connection.CreateCommand();
+                command.CommandText = "SELECT * from myTable WHERE id BETWEEN " + 1 + " AND " + TableViewController.currentRow; //current row is last known written row.
+                SQLiteDataReader DataReader = command.ExecuteReader();
+                return DataReader;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString() + " @SqlDB.GetVisibleIdRange()");
+            }
+
+            return null;
+
+        }
 
         //------------------------------//
 

@@ -16,7 +16,7 @@ You are required to append your name as a Sub-Author, and date at the bottom of 
 DO NOT REMOVE any names appended to the agreement. Whether you build on this base or build on a flavor of it, every gets their credit.
 
 **Any modification must include in comments:**
-This is a flavor of LifeDB, originally create by Michael Trzeciakiewicz.
+This is a flavor of LifeDB, originally created by Michael Trzeciakiewicz.
 The original version is available on GitHub.
 
 **Sales:** This is a free software, and may not be sold for profit.  Modifications are not exempt from the clause.  

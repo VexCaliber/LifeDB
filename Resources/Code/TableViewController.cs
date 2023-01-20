@@ -17,27 +17,21 @@ namespace LifeDB.Resources.Code
     public static class TableViewController
     {
 
-
         private static System.Windows.Documents.Table table;
 
-        //Pretend these 2 don't exist...
-        //private static TableRowGroupCollection rowGroups;
-        //private static TableColumnCollection tableColumns; 
-
-        private static int currentRow = 0;
-        //private static int maxColumns = tableColumns.Count; //This is the problem line...
-        
-
+        public static int currentRow { get; private set; }
 
         //private static TableRow rowTemplateA = (TableRow)Application.Current.Resources["RowA"];
         //private static TableRow rowTemplateB = (TableRow)Application.Current.Resources["RowB"];
 
-
+        //------------------------------//
 
         public static void Generate()
         {
 
             SQLiteDataReader reader = SqlDb.SelectAll();
+
+            if (reader == null) throw new Exception("Failed to get data from table via Select All @TableViewController.Generate()");
 
             var columns = reader.FieldCount;
             
@@ -60,9 +54,52 @@ namespace LifeDB.Resources.Code
 
         }
 
+        //FAILS SILENT!
+        public static void Generate(SQLiteDataReader reader)
+        {
 
-        
+            if (reader == null) return; //Break out and fail silently
 
+            var columns = reader.FieldCount;
+
+            List<String> values = new List<String>();
+
+            while (reader.Read()) //REVIEW ME!
+            {
+
+                for (int i = 0; i < columns; i++)
+                {
+                    values.Add(reader.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
+                }
+
+                GenerateRow(values);
+
+                values.Clear();              
+
+            }
+
+        }
+
+        public static void Update(Boolean fetchNewRows)
+        {
+
+            if(fetchNewRows == true) {
+                
+                SqlDb.DBCount(); //REQUIRED
+
+                if (currentRow < SqlDb.lastCount) 
+                    Generate(SqlDb.GetIdRange(currentRow++, SqlDb.lastCount)); //call and grab result set :: incl/incl & Generate
+                
+            }
+
+            //scan and compare db cells against visible cells, if dbcell is different, rewrite visible cell.  
+            //pass GetVisibleIdRange() to a new method here...call it...agitate? bad data falls "through the mesh", good data stays?
+            //this too should be on another thread, may split threads for each row so they can "all work at once"...
+
+
+        }
+
+        //------------------------------//
 
         public static void Init(System.Windows.Documents.Table t)
         {
@@ -77,7 +114,7 @@ namespace LifeDB.Resources.Code
 
         }
 
-        ///
+        //------------------------------//
 
         /* So...I broke down and went imperative with it...instead of creating rows in ResDef, I should've just created styles.
          * I don't know if there's a work around...but it seems that using the keys in the dictionary (being vars, not objs)
@@ -88,7 +125,7 @@ namespace LifeDB.Resources.Code
         {
 
 
-            if (!(currentRow % 2 == 0))//currentRow % 2 == 0
+            if (!(currentRow % 2 == 0))
             {
 
                 table.RowGroups[0].Rows.Add(GenerateGenericRowA());
@@ -129,6 +166,8 @@ namespace LifeDB.Resources.Code
 
         }
 
+        //------------------------------//
+
         private static TableRow GenerateGenericRowA()
         {
 
@@ -168,6 +207,8 @@ namespace LifeDB.Resources.Code
             return tr;
 
         }
+
+        //------------------------------//
 
     }
 
