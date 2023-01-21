@@ -1,6 +1,4 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SQLite;
@@ -24,7 +22,9 @@ namespace LifeDB.Resources.Code
         //private static TableRow rowTemplateA = (TableRow)Application.Current.Resources["RowA"];
         //private static TableRow rowTemplateB = (TableRow)Application.Current.Resources["RowB"];
 
+       
         //------------------------------//
+
 
         public static void Generate()
         {
@@ -54,6 +54,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+        
         //FAILS SILENT!
         public static void Generate(SQLiteDataReader reader)
         {
@@ -80,6 +81,54 @@ namespace LifeDB.Resources.Code
 
         }
 
+        
+        //my brains not really in it today so: REVIEW ME! :: Also: FAILS SILENTLY!
+        public static void Agitate(SQLiteDataReader reader)
+        {
+            if (reader == null) return;
+            var columns = reader.FieldCount;
+            List<String> DBValues = new List<String>();
+            
+            int activeRow = 1;
+            var cells = table.RowGroups[0].Rows[activeRow].Cells.ToList();
+
+            while (reader.Read()) //REVIEW ME!
+            {
+
+                for (int i = 0; i < columns; i++)
+                {
+                    DBValues.Add(reader.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
+                }
+
+                for(int i = 0; i < columns; i++ )
+                {
+                                                      //an array of blocks
+                    //row of cells (7), each cell has a block (paragraph), within that paragraph is a run, within the run is the text to change
+                    if (!(DBValues[i].Equals(cells[i]               //get the cells in the active row
+                        .Blocks                                     //get the array of parent blocks
+                        .FirstBlock                                 //get the first parent block (paragragh)
+                        .SiblingBlocks                              //get the array of sibling blocks of the first parent block
+                        .FirstBlock                                 //get the first child block (paragraph(run("txt")))
+                        .ContentStart                               //get the head (pointer) for the content of the block
+                        .GetTextInRun(LogicalDirection.Forward))))  //get the text in this block, reading from left to right (String)
+                                                                    //see what I mean...f-ing messy...I hope this is right, haven't tested yet
+                        
+                    {
+                        table.RowGroups[0].Rows[activeRow].Cells[i].Blocks.Clear(); //this can be modified using the above (precision), to reduce object allocations
+                        table.RowGroups[0].Rows[activeRow].Cells[i].Blocks.Add(new Paragraph(new Run(DBValues[i])));
+                    }
+
+                }
+
+
+                DBValues.Clear();
+                activeRow++;
+
+            }
+
+        }
+
+        
         public static void Update(Boolean fetchNewRows)
         {
 
@@ -93,14 +142,19 @@ namespace LifeDB.Resources.Code
             }
 
             //scan and compare db cells against visible cells, if dbcell is different, rewrite visible cell.  
+            
             //pass GetVisibleIdRange() to a new method here...call it...agitate? bad data falls "through the mesh", good data stays?
+            Agitate(SqlDb.GetVisibleIdRange());
+            
             //this too should be on another thread, may split threads for each row so they can "all work at once"...
 
 
         }
 
+       
         //------------------------------//
 
+       
         public static void Init(System.Windows.Documents.Table t)
         {
          
@@ -114,6 +168,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+        
         //------------------------------//
 
         /* So...I broke down and went imperative with it...instead of creating rows in ResDef, I should've just created styles.
@@ -166,7 +221,9 @@ namespace LifeDB.Resources.Code
 
         }
 
+        
         //------------------------------//
+
 
         private static TableRow GenerateGenericRowA()
         {
@@ -188,6 +245,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+       
         private static TableRow GenerateGenericRowB()
         {
 
@@ -208,6 +266,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+        
         //------------------------------//
 
     }
@@ -347,5 +406,8 @@ private static void AddRow()
     //cell.Blocks.Add(new Paragraph(new Run("Hello world")));
 
     //table.RowGroups[0].Rows[currentRow].Cells.Add(new TableCell(new Paragraph(new Run("Product"))));
+
+
+    //DBValues.ElementAt(i).Equals(cells.ElementAt(i))) )   //SiblingBlocks.FirstBlock.ContentStart.
 
 }

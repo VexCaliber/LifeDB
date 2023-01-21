@@ -23,7 +23,9 @@ namespace LifeDB.Resources.Code
 
         //------------------------------//
 
+
         private static SQLiteConnection connection = Connect();
+
 
         public static SQLiteConnection Connect()
         {
@@ -74,6 +76,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         public static void Reconnect(SQLiteConnection con)
         {
 
@@ -88,7 +91,9 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         //------------------------------//
+
 
         private static void CreateDefaultTable(SQLiteConnection con)
         {
@@ -252,6 +257,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         //DANGER -- UNSANITIZED INPUT
         public static Boolean Run(String userCommand)
         {
@@ -308,6 +314,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         //Reserved for testing & TableViewController
         public static SQLiteDataReader SelectAll()
         {
@@ -329,6 +336,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         public static void DBCount()
         {
 
@@ -348,6 +356,7 @@ namespace LifeDB.Resources.Code
             }
 
         }
+
 
         //BETWEEN OPERATOR SHOULD BE INCLUSIVE/INCLUSIVE
         public static SQLiteDataReader GetIdRange(int startId, int endId)
@@ -370,6 +379,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         public static SQLiteDataReader GetVisibleIdRange()
         {
 
@@ -390,7 +400,9 @@ namespace LifeDB.Resources.Code
 
         }
 
+
         //------------------------------//
+
 
         //Conv_Methods
         public static void Pump(params String[] kvps)
@@ -399,6 +411,7 @@ namespace LifeDB.Resources.Code
             SqlDb.Add(new SqlPacket().Build(kvps));
 
         }
+
 
         public static void Pump(Enum Command, params String[] kvps)
         {
@@ -412,6 +425,7 @@ namespace LifeDB.Resources.Code
                 SqlDb.Remove(new SqlPacket().Build(kvps));
 
         }
+
 
         public enum Command {
             add,

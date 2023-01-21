@@ -36,7 +36,11 @@ namespace LifeDB
             //SqlDb.Pump("item_name", "smokes", "item_quantity", "25");
             //SqlDb.Pump("item_name", "glorius resumes", "item_quantity", "9001");
             SqlDb.Pump("id", "4", "item_name", "rocket", "item_quantity", "69");
-            SqlDb.Pump("item_name", "epic resumes", "item_quantity", "69", "item_category", "paperwork", "added", new DateOnly(day:12, month:6, year: 2020).ToString());
+            // SqlDb.Pump("item_name", "epic resumes", "item_quantity", "69", "item_category", "paperwork", "added", new DateOnly(day:12, month:6, year: 2020).ToString());
+            SqlDb.Pump("id", "5", "item_name", "name", "item_quantity", "1000", "item_category", "myCategory", "added", "2023/12/22", "expires", "2023/12/23", "limit", "5");
+
+
+
 
             //var x = SqlDb.SelectAll();
 
@@ -105,6 +109,9 @@ namespace LifeDB
         {
             try
             {
+                String limitFix = ADD_LIMIT.Content.ToString();
+                limitFix = limitFix.Insert(0, "'");
+                limitFix = limitFix.Insert(limitFix.Length, "'");
                 //must add default space? :: Edit it have pump return a bool...use the bool the set the button pass/fail color
                 Pump(Command.add, ADD_ID.Content.ToString(), ADD_ID_VALUE.Text.ToString(), 
                                   ADD_NAME.Content.ToString(), ADD_NAME_VALUE.Text.ToString(),
@@ -112,8 +119,11 @@ namespace LifeDB
                                   ADD_CAT.Content.ToString(), ADD_CAT_VALUE.Text.ToString(),
                                   ADD_ADDED.Content.ToString(), ADD_ADDED_VALUE.Text.ToString(),
                                   ADD_EXPIRES.Content.ToString(), ADD_EXPIRES_VALUE.Text.ToString(),
-                                  ADD_LIMIT.Content.ToString(), ADD_LIMIT_VALUE.Text.ToString());
-
+                                  limitFix, ADD_LIMIT_VALUE.Text.ToString());//Int32.Parse(ADD_LIMIT_VALUE.Text)); //RESUME HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                                  //so i think I escaped id, quant seems to work fine being an int, but limit is broken.  So
+                                  //I added limit fix, in case that was the issue, which then brought a type exception from the table
+                                  //I know I'm passing limit as a string, but why would it work for the others and not limit?
+                                  //idk, but I'm out for the day...my brain has been toast all day O.o
             }
             catch(Exception ex)
             {
