@@ -1,7 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design.Serialization;
 using System.Data.SQLite;
 using System.Data.SqlTypes;
 using System.IO;
@@ -469,7 +472,7 @@ namespace LifeDB.Resources.Code
             
             if(pairs.Length % 2 != 0)
             {
-                throw new FormatException("You must provide values as k,v,k,v :: if a value doesn't exist, pass null w/o quotes");
+                throw new FormatException("Just contact VexCaliber on GitHub...");
             }
 
             /*
@@ -604,6 +607,22 @@ namespace LifeDB.Resources.Code
 
             foreach (KVP<String, String> pair in Mappings)
             {
+                /* Sigh...
+                try 
+                { 
+                    int? intEsc = Int32.Parse(pair.GetValue());
+                    if (intEsc != null) sb.Append(intEsc);
+                    else sb.Append(' ');
+                    counter++;
+                    if (counter < Mappings.Count()) sb.Append(',');
+                    continue;
+                }
+                catch (Exception e)
+                {
+                    //SWALLOWED
+                }
+                */
+
                 sb.Append('\'');
 
                 if (pair.GetValue() == null)

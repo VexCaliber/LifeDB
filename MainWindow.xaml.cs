@@ -1,4 +1,5 @@
 ﻿using LifeDB.Resources.Code;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -37,9 +38,9 @@ namespace LifeDB
             //SqlDb.Pump("item_name", "glorius resumes", "item_quantity", "9001");
             SqlDb.Pump("id", "4", "item_name", "rocket", "item_quantity", "69");
             // SqlDb.Pump("item_name", "epic resumes", "item_quantity", "69", "item_category", "paperwork", "added", new DateOnly(day:12, month:6, year: 2020).ToString());
-            SqlDb.Pump("id", "5", "item_name", "name", "item_quantity", "1000", "item_category", "myCategory", "added", "2023/12/22", "expires", "2023/12/23", "limit", "5");
-
-
+            SqlDb.Pump("id", "5", "item_name", "name", "item_quantity", "1000", "item_category", "myCategory", "added", "2023/12/22", "expires", "2023/12/23", "`limit`", "5");
+            SqlDb.Pump("id", "6", "item_name", "name2", "item_quantity", "1000", "item_category", "myCategory", "added", "2023//12//22", "expires", "", "`limit`", "77"); //OK CONFIRMED LIMIT DOES HAVE TO BE BACKTICKED OUT 
+            SqlDb.Pump("id", "7", "item_name", "name2", "item_quantity", "1000", "item_category", "myCategory", "added", null, "expires", null, "`limit`", "77"); //NOTE: TRY DOUBLE WRAPPING INTS or REPLACING single quotes with double...in the call it should tell sqlite to run it as an int.
 
 
             //var x = SqlDb.SelectAll();
@@ -110,20 +111,25 @@ namespace LifeDB
             try
             {
                 String limitFix = ADD_LIMIT.Content.ToString();
-                limitFix = limitFix.Insert(0, "'");
-                limitFix = limitFix.Insert(limitFix.Length, "'");
+                limitFix = limitFix.Insert(0, "`");
+                limitFix = limitFix.Insert(limitFix.Length, "`");
                 //must add default space? :: Edit it have pump return a bool...use the bool the set the button pass/fail color
-                Pump(Command.add, ADD_ID.Content.ToString(), ADD_ID_VALUE.Text.ToString(), 
-                                  ADD_NAME.Content.ToString(), ADD_NAME_VALUE.Text.ToString(),
-                                  ADD_QUANT.Content.ToString(), ADD_QUANT_VALUE.Text.ToString(),
-                                  ADD_CAT.Content.ToString(), ADD_CAT_VALUE.Text.ToString(),
-                                  ADD_ADDED.Content.ToString(), ADD_ADDED_VALUE.Text.ToString(),
-                                  ADD_EXPIRES.Content.ToString(), ADD_EXPIRES_VALUE.Text.ToString(),
-                                  limitFix, ADD_LIMIT_VALUE.Text.ToString());//Int32.Parse(ADD_LIMIT_VALUE.Text)); //RESUME HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                Pump(Command.add, ADD_ID.Content.ToString(),        ADD_ID_VALUE.Text, 
+                                  ADD_NAME.Content.ToString(),      ADD_NAME_VALUE.Text,
+                                  ADD_QUANT.Content.ToString(),     ADD_QUANT_VALUE.Text.ToString(),
+                                  ADD_CAT.Content.ToString(),       ADD_CAT_VALUE.Text.ToString(),
+                                  ADD_ADDED.Content.ToString(),     ADD_ADDED_VALUE.Text.ToString(),
+                                  ADD_EXPIRES.Content.ToString(),   ADD_EXPIRES_VALUE.Text.ToString(),
+                                  limitFix,                         ADD_LIMIT_VALUE.Text);//Int32.Parse(ADD_LIMIT_VALUE.Text)); //RESUME HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                   //so i think I escaped id, quant seems to work fine being an int, but limit is broken.  So
                                   //I added limit fix, in case that was the issue, which then brought a type exception from the table
                                   //I know I'm passing limit as a string, but why would it work for the others and not limit?
                                   //idk, but I'm out for the day...my brain has been toast all day O.o
+
+                                  ///Wtf?  So passing to pump the string for quantity works in pump when writing imperatively
+                                  ///but not when passing implicit?  WHY!, WHY!? >.< ;; tell me it's another sqlite thing...
+                                  /////Ok...time for a pro gamer move...
+
             }
             catch(Exception ex)
             {
