@@ -100,7 +100,7 @@ namespace LifeDB.Resources.Code
                     DBValues.Add(reader.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
                 }
 
-                for(int i = 0; i < columns; i++ )
+                for(int i = 0; i < columns; i++ ) // FLAG: THROWS!  May need call to reset reader?
                 {
                                                       //an array of blocks
                     //row of cells (7), each cell has a block (paragraph), within that paragraph is a run, within the run is the text to change

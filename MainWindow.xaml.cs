@@ -139,6 +139,7 @@ namespace LifeDB
             }
 
             ADD_SUBMIT.Background = System.Windows.Media.Brushes.LightGreen;
+            //TableViewController.Update(true);//throwing null pointer!
             //need a call to update table!
 
         }

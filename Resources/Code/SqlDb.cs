@@ -605,25 +605,68 @@ namespace LifeDB.Resources.Code
             StringBuilder sb = new StringBuilder();
             int counter = 1;
 
+            //Cascading SQLDB Type Conversion Recovery
             foreach (KVP<String, String> pair in Mappings)
             {
-                /* Sigh...
-                try 
-                { 
-                    int? intEsc = Int32.Parse(pair.GetValue());
-                    if (intEsc != null) sb.Append(intEsc);
-                    else sb.Append(' ');
-                    counter++;
-                    if (counter < Mappings.Count()) sb.Append(',');
-                    continue;
+                
+       // Standard Int32 Option         
+       TryInt32:try 
+                {
+                    
+                    Int32 Oint;
+                    Boolean intified = Int32.TryParse(pair.GetValue(), out Oint);
+
+                    if (intified == true)
+                    {
+
+                        sb.Append(Oint.ToString());
+
+                        if (counter < Mappings.Count()) sb.Append(',');
+
+                        counter++;
+
+                        continue;
+                    
+                    }else goto TryDateOnly;
+
                 }
                 catch (Exception e)
                 {
                     //SWALLOWED
                 }
-                */
 
-                sb.Append('\'');
+
+    // Standard DateOnly Option            
+    TryDateOnly:try
+                {
+                   
+                    DateOnly ODate;
+                    Boolean dateified = DateOnly.TryParse(pair.GetValue(), out ODate);
+
+                    if (dateified == true)
+                    {
+                        sb.Append(ODate.ToString());
+
+                        if (counter < Mappings.Count()) sb.Append(',');
+
+                        counter++;
+
+                        continue;
+
+                    }else goto TryString;
+                    
+
+                }
+                catch (Exception e2)
+                {
+                    //SWALLOWED
+                }
+
+
+      //Standard String Option (original base choice / the OG code)         
+      TryString:
+
+                sb.Append('\''); //REVIEW ALL OF THE BELOW! :: If adding id, added, expires, and limit in view...it atleast posts something!
 
                 if (pair.GetValue() == null)
                     sb.Append(' ');
