@@ -42,7 +42,28 @@ namespace LifeDB.Resources.Code
 
                 for (int i = 0; i < columns; i++)
                 {
-                    values.Add(reader.GetValue(i).ToString()); //reader.GetString(i)
+
+                    if(columns == 5 | columns == 6)
+                    {
+                        String preform = reader.GetString(i);
+                        //preform
+                        DateOnly date;
+                        DateOnly.TryParse(reader.GetString(i), out date);  
+                        
+                        ///NEW -- WORK ON DATE SERIALIZATION AND READING!!!!                                                   
+                        ///WOW, ok...so sqlite doesn't have a date object, it saves as plain TEXT or int value since epoch
+                        ///Now, the /'s are breaking the string...so in terms of strat, we gonna go the txt route.
+                        /// so we need to add another slash to slashes to escape them // on in and out and it should work
+                        /// I'll return tomorrow and should finally have this fixed.  Although I will say, they really should have dates implemented
+                        ///
+                        
+                        MessageHandler.userConsole.Text += reader.GetString(i);//date.ToString()
+                        values.Add(date.ToString());
+                    }
+                    else
+                        values.Add(reader.GetValue(i).ToString()); //reader.GetString(i)
+                        MessageHandler.userConsole.Text += reader.GetValue(i).ToString();
+
                 }
 
                 GenerateRow(values);
@@ -97,8 +118,11 @@ namespace LifeDB.Resources.Code
 
                 for (int i = 0; i < columns; i++)
                 {
+                    
                     DBValues.Add(reader.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
+                
                 }
+
 
                 for(int i = 0; i < columns; i++ ) // FLAG: THROWS!  May need call to reset reader?
                 {

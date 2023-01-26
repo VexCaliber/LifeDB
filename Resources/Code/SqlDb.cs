@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.Unicode;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace LifeDB.Resources.Code
 {
@@ -21,7 +22,6 @@ namespace LifeDB.Resources.Code
     public static class SqlDb
     {
         public static int lastCount { get; private set; }
-
 
 
         //------------------------------//
@@ -608,6 +608,18 @@ namespace LifeDB.Resources.Code
             //Cascading SQLDB Type Conversion Recovery
             foreach (KVP<String, String> pair in Mappings)
             {
+
+                if (pair.GetValue() == null | pair.GetValue() == "" | pair.GetValue() == " ")
+                    {
+                        if (counter == 5 | counter == 6) goto TryDateOnly;
+                        sb.Append("NULL");
+                        if (counter < Mappings.Count()) sb.Append(',');
+                        counter++;
+                        continue;
+                    }
+                    
+
+
                 
        // Standard Int32 Option         
        TryInt32:try 
@@ -645,7 +657,7 @@ namespace LifeDB.Resources.Code
 
                     if (dateified == true)
                     {
-                        sb.Append(ODate.ToString());
+                        sb.Append(ODate.ToString()); //MessageHandler.userConsole.Text += " " + ODate.ToString() + " ";
 
                         if (counter < Mappings.Count()) sb.Append(',');
 
