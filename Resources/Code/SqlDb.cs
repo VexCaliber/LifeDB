@@ -657,7 +657,20 @@ namespace LifeDB.Resources.Code
 
                     if (dateified == true)
                     {
-                        sb.Append(ODate.ToString()); //MessageHandler.userConsole.Text += " " + ODate.ToString() + " ";
+                        //var fix = ODate.ToString(); 
+                        //fix.Replace(@"/",@"//"); //ESCAPE FORWARD SLASH
+                        ///Ok, so we're keeping dates numeric, and we'll pass the nums in as it needs
+                        ///we'll then rebuild the date on the read
+                        int numerified;
+                        String tmp = "";
+
+                        tmp += ODate.Year + "" + ODate.Month + "" + ODate.Day;
+                        numerified = Int32.Parse(tmp);
+
+                        ///MessageHandler.userConsole.Text += numerified + " ";
+                        ///MessageHandler.userConsole.Text += tmp + " ";
+
+                        sb.Append(numerified); //MessageHandler.userConsole.Text += " " + ODate.ToString() + " ";////////////////////////////////////////////////////////////////////
 
                         if (counter < Mappings.Count()) sb.Append(',');
 

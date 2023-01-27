@@ -1,11 +1,19 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SQLite;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Reflection.PortableExecutable;
+using System.Text;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Brushes = System.Windows.Media.Brushes;
+
+using FontFamily = System.Windows.Media.FontFamily;
 
 namespace LifeDB.Resources.Code
 {
@@ -33,7 +41,7 @@ namespace LifeDB.Resources.Code
 
             if (reader == null) throw new Exception("Failed to get data from table via Select All @TableViewController.Generate()");
 
-            var columns = reader.FieldCount;
+            var columns = reader.FieldCount; MessageHandler.userConsole.Text += columns;
             
             List<String> values = new List<String>();
             
@@ -43,26 +51,21 @@ namespace LifeDB.Resources.Code
                 for (int i = 0; i < columns; i++)
                 {
 
-                    if(columns == 5 | columns == 6)
+                    if(i == 4 | i == 5)
                     {
-                        String preform = reader.GetString(i);
-                        //preform
-                        DateOnly date;
-                        DateOnly.TryParse(reader.GetString(i), out date);  
-                        
-                        ///NEW -- WORK ON DATE SERIALIZATION AND READING!!!!                                                   
-                        ///WOW, ok...so sqlite doesn't have a date object, it saves as plain TEXT or int value since epoch
-                        ///Now, the /'s are breaking the string...so in terms of strat, we gonna go the txt route.
-                        /// so we need to add another slash to slashes to escape them // on in and out and it should work
-                        /// I'll return tomorrow and should finally have this fixed.  Although I will say, they really should have dates implemented
-                        ///
-                        
-                        MessageHandler.userConsole.Text += reader.GetString(i);//date.ToString()
-                        values.Add(date.ToString());
+                        ///We're getting a number YYYY/MM/DD
+                        ///Take the value and build a date  :: In 1/12/2020, becomes 2020/1/12; Out value -> String -> Date -> Add -> Table
+                        //2020112  20200112  20112  200112
+                        //0123456
+                        var preform = reader.GetValue(i);
+                        var d = preform.ToString();
+
+                        //MessageHandler.userConsole.Text += d + " ";//date.ToString()
+                        values.Add(DateNormalizer(d));
                     }
                     else
                         values.Add(reader.GetValue(i).ToString()); //reader.GetString(i)
-                        MessageHandler.userConsole.Text += reader.GetValue(i).ToString();
+                        //MessageHandler.userConsole.Text += i;//reader.GetValue(i).ToString();
 
                 }
 
@@ -215,7 +218,7 @@ namespace LifeDB.Resources.Code
                 //for(int i = 0; i < cells.Count-1; i++) table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Clear();
                 
                 //assign the vals 
-                for(int i = 0; i < cells.Count - 1; i++) 
+                for(int i = 0; i < cells.Count; i++) ///CHANGED -- From .count-1 to count
                 { 
                     
                     table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Add(new Paragraph(new Run(values[i])));
@@ -233,7 +236,7 @@ namespace LifeDB.Resources.Code
                 currentRow++;
                 var cells = table.RowGroups[0].Rows[currentRow].Cells.ToList();
 
-                for (int i = 0; i < cells.Count - 1; i++)
+                for (int i = 0; i < cells.Count; i++) ///CHANGED -- From .count-1 to count
                 {
                     //Found the answer...but god this is still awful...I'll do something about it...
                     //table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Clear();
@@ -283,7 +286,7 @@ namespace LifeDB.Resources.Code
             }
 
             tr.Background = Brushes.WhiteSmoke;
-            tr.FontFamily = new FontFamily("consolas");
+            tr.FontFamily = new FontFamily("consolas"); //THESE CAUSE AMBIG. ERRORS TRACK THE USINGS IN IMPORTS...they just decided to throw randomly O.o
             tr.FontSize = 12;
 
             return tr;
@@ -292,6 +295,87 @@ namespace LifeDB.Resources.Code
 
         
         //------------------------------//
+
+
+        private static String DateNormalizer(String RawDate)
+        {
+            //len = 7  len = 8   len=5  len=6
+            //2020112  20200112  20112  200112
+            //0123456  01234567  01234  012345
+
+            //////// len=6   len=5   len=4
+            //alt:// 202016  202016  2016
+            //////// 012345  012345  0123
+            
+            /* CREATE IFS TO FIX VERY MALFORMED ALTS
+            if(RawDate.Length == 6)
+            {
+
+                var currentYear = DateTime.Now.Year;
+                var cloned = new String(RawDate);
+                cloned.Insert(0, "00");
+
+                // 6A         6B
+                //len=6      len=6
+                //200112     202016  --YYMMDD--YYYYMD-
+                //012345     012345
+
+                //    MMDD    YYMD
+                //6A: 0112  B:2016
+                var dropLeadYear = RawDate.Substring(2);
+
+                //
+                //6A: 00200112  6B: 00202016
+                //        0112          2016
+
+                var dropFullYear = cloned.Substring();
+
+                
+            }
+            */
+
+            StringBuilder reverted = new();
+
+            switch (RawDate.Length)
+            {
+                case 5: return reverted.Append(RawDate.Substring(2,1))
+                                        .Append("/")
+                                        .Append(RawDate.Substring(3,2))
+                                        .Append("/")
+                                        .Append(RawDate.Substring(0,2))
+                                        .ToString();
+
+
+
+                case 6: return reverted.Append(RawDate.Substring(2,2))
+                                        .Append("/")
+                                        .Append(RawDate.Substring(4,2))
+                                        .Append("/")
+                                        .Append(RawDate.Substring(0,2))
+                                        .ToString();
+
+
+
+                case 7: return reverted.Append(RawDate.Substring(4, 1)) //day
+                                        .Append("/")
+                                        .Append(RawDate.Substring(5, 2)) //month
+                                        .Append("/")
+                                        .Append(RawDate.Substring(0, 4)) //year
+                                        .ToString();
+                                 
+                    
+
+                case 8: return reverted.Append(RawDate.Substring(4,2))
+                                        .Append("/")
+                                        .Append(RawDate.Substring(6,2))
+                                        .Append("/")
+                                        .Append(RawDate.Substring(0,4))
+                                        .ToString();
+
+                default: return " ";
+            }
+               
+        }
 
     }
 
