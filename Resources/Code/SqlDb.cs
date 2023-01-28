@@ -346,12 +346,12 @@ namespace LifeDB.Resources.Code
             try
             {
                 SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-                command.CommandText = "Select COUNT (id) from myTable";
-                SQLiteDataReader DataReader = command.ExecuteReader();
-                DataReader.Read(); //Result sets start at 0 location, must be read once to tick to first result/row :: may actually be unnecessary here, but Sqlite is a bit screwy so...
-                lastCount = DataReader.GetInt32(1);
-                
+                command = SqlDb.connection.CreateCommand(); 
+                command.CommandText = "Select COUNT(id) from myTable"; 
+                SQLiteDataReader DataReader = command.ExecuteReader(); 
+                DataReader.Read();  //Result sets start at 0 location, must be read once to tick to first result/row :: may actually be unnecessary here, but Sqlite is a bit screwy so...
+                lastCount = (Int32)DataReader.GetInt64(0); ///ISSUE HERE
+
             }
             catch (Exception e)
             {
@@ -558,7 +558,7 @@ namespace LifeDB.Resources.Code
         }
 
 
-        // sb.Append('\''); values need their single quotes...REVIEW ME! -- Using if's, without quotes for nulls, it'll throw in Sql
+        // USED BY EDIT AND REMOVE -- NEEDS REWORK.  It shouldn't default the ' or ' '
         public IList<String> GetValues()
         {
             IList<String> ValueList = new List<String>();
@@ -598,8 +598,7 @@ namespace LifeDB.Resources.Code
 
         }
 
-
-        // sb.Append('\''); values need their single quotes...REVIEW ME! -- Using if's, without quotes for nulls, it'll throw in Sql
+       
         public String GetValueCSVString()
         {
             StringBuilder sb = new StringBuilder();
