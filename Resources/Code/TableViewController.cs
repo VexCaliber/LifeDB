@@ -26,7 +26,9 @@ namespace LifeDB.Resources.Code
 
         private static System.Windows.Documents.Table table;
 
+
         public static int currentRow { get; private set; }
+
 
         //private static TableRow rowTemplateA = (TableRow)Application.Current.Resources["RowA"];
         //private static TableRow rowTemplateB = (TableRow)Application.Current.Resources["RowB"];
@@ -79,9 +81,7 @@ namespace LifeDB.Resources.Code
 
         }
 
-        
-        //FAILS SILENT! -- WILL NEED REVIEW & REWORK POTENTIALLY AS WELL AS AGITATE & UPDATE
-        ///Update Calls this specifically only if we're fetching new rows...
+       
         public static void Generate(SQLiteDataReader reader)
         {
 
@@ -96,7 +96,18 @@ namespace LifeDB.Resources.Code
 
                 for (int i = 0; i < columns; i++)
                 {
-                    values.Add(reader.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
+                    
+                    if (i == 4 | i == 5)
+                    {
+                        
+                        var preform = reader.GetValue(i);
+                        var d = preform.ToString();
+                        values.Add(DateNormalizer(d));
+                       
+                    }
+                    else
+                        values.Add(reader.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
+               
                 }
 
                 GenerateRow(values);
@@ -108,8 +119,6 @@ namespace LifeDB.Resources.Code
         }
 
         
-        //my brains not really in it today so: REVIEW ME! :: Also: FAILS SILENTLY!
-        ///Update Calls this ALWAYS to update individual cells
         public static void Agitate(SQLiteDataReader reader)
         {
             if (reader == null) return;
@@ -119,18 +128,26 @@ namespace LifeDB.Resources.Code
             int activeRow = 1;
             var cells = table.RowGroups[0].Rows[activeRow].Cells.ToList();
 
-            while (reader.Read()) //REVIEW ME!
+            while (reader.Read())
             {
 
                 for (int i = 0; i < columns; i++)
                 {
-                    
-                    DBValues.Add(reader.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
+                    if (i == 4 | i == 5)
+                    {
+                        
+                        var preform = reader.GetValue(i);
+                        var d = preform.ToString();
+                        DBValues.Add(DateNormalizer(d));
+                        
+                    }
+                    else
+                        DBValues.Add(reader.GetValue(i).ToString());
                 
                 }
 
 
-                for(int i = 0; i < columns; i++ ) // FLAG: THROWS!  May need call to reset reader?
+                for(int i = 0; i < columns; i++ )
                 {
                                                       //an array of blocks
                     //row of cells (7), each cell has a block (paragraph), within that paragraph is a run, within the run is the text to change
@@ -162,7 +179,7 @@ namespace LifeDB.Resources.Code
         public static void Update(Boolean fetchNewRows)
         {
 
-            if(fetchNewRows == true) { //SQL is throwing indexoutofbounds...possibly an issue in timing, although sleep didn't fix it.
+            if(fetchNewRows == true) {
 
                 //Thread.Sleep(50000);
 
@@ -173,14 +190,8 @@ namespace LifeDB.Resources.Code
                     Generate(SqlDb.GetIdRange(startingRow, SqlDb.lastCount)); //call and grab result set :: incl/incl & Generate
                 
             }
-
-            //scan and compare db cells against visible cells, if dbcell is different, rewrite visible cell.  
             
-            //pass GetVisibleIdRange() to a new method here...call it...agitate? bad data falls "through the mesh", good data stays?
-            ///Agitate(SqlDb.GetVisibleIdRange());
-            
-            //this too should be on another thread, may split threads for each row so they can "all work at once"...
-
+            Agitate(SqlDb.GetVisibleIdRange());            
 
         }
 
@@ -204,10 +215,6 @@ namespace LifeDB.Resources.Code
         
         //------------------------------//
 
-        /* So...I broke down and went imperative with it...instead of creating rows in ResDef, I should've just created styles.
-         * I don't know if there's a work around...but it seems that using the keys in the dictionary (being vars, not objs)
-         * does generate conflicts.
-         */
 
         private static void GenerateRow(List<String> values)
         {
@@ -314,7 +321,7 @@ namespace LifeDB.Resources.Code
             //////// len=6   len=5   len=4
             //alt:// 202016  202016  2016
             //////// 012345  012345  0123
-            
+
             /* CREATE IFS TO FIX VERY MALFORMED ALTS
             if(RawDate.Length == 6)
             {
@@ -380,7 +387,7 @@ namespace LifeDB.Resources.Code
                                         .Append(RawDate.Substring(0,4))
                                         .ToString();
 
-                default: return " ";
+                default: return "-1";
             }
                
         }

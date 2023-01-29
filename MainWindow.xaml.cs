@@ -29,23 +29,9 @@ namespace LifeDB
 
             TableViewController.Init(myTable);
             
-
-            
             //| id | item_name | item_quantity | item_category | added | expires | limit |
-            
-            ///SqlDb.Pump("id", "1", "item_name", null);
-            ///SqlDb.Pump("id", "2", "item_name", "sprocket", "item_quantity", "12");
-            ///SqlDb.Pump("id", "3", "item_name", "rock", "item_quantity", "1");
-            //SqlDb.Pump("item_name", "smokes", "item_quantity", "25");
-            //SqlDb.Pump("item_name", "glorius resumes", "item_quantity", "9001");
-            ///SqlDb.Pump("id", "4", "item_name", "rocket", "item_quantity", "69");
-            // SqlDb.Pump("item_name", "epic resumes", "item_quantity", "69", "item_category", "paperwork", "added", new DateOnly(day:12, month:6, year: 2020).ToString());
-            ///SqlDb.Pump("id", "5", "item_name", "name", "item_quantity", "1000", "item_category", "myCategory", "added", "2023/12/22", "expires", "2023/12/23", "`limit`", "5");
-            ///SqlDb.Pump("id", "6", "item_name", "name2", "item_quantity", "1000", "item_category", "myCategory", "added", "2023//12//22", "expires", "", "`limit`", "77"); //OK CONFIRMED LIMIT DOES HAVE TO BE BACKTICKED OUT 
-            ///SqlDb.Pump("id", "7", "item_name", "name2", "item_quantity", "1000", "item_category", "myCategory", "added", null, "expires", null, "`limit`", "77"); //NOTE: TRY DOUBLE WRAPPING INTS or REPLACING single quotes with double...in the call it should tell sqlite to run it as an int.
-
-
-            TableViewController.Generate(); //needs a thread!
+    
+            TableViewController.Generate();
             
 
         }
@@ -117,6 +103,11 @@ namespace LifeDB
             ADD_SUBMIT.Background = System.Windows.Media.Brushes.LightGreen;
             TableViewController.Update(true);//throwing null pointer! ::EDIT, now throws indexoutofrange
             //need a call to update table!
+
+        }
+
+        private void EDIT_SUBMIT_EXECUTE(object sender, RoutedEventArgs e)
+        {
 
         }
     }

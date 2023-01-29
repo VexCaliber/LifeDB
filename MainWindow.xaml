@@ -438,12 +438,31 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
+                        <Label x:Name="EDIT_ID" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="id"/>
+                        <Label x:Name="EDIT_NAME" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_name"/>
+                        <Label x:Name="EDIT_QUANT" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_quantity"/>
+                        <Label x:Name="EDIT_CAT" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_category"/>
+                        <Label x:Name="EDIT_ADDED" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="added"/>
+                        <Label x:Name="EDIT_EXPIRES" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="expires"/>
+                        <Label x:Name="EDIT_LIMIT" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="limit"/>
+
+                        <TextBox x:Name="EDIT_ID_VALUE" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="EDIT_NAME_VALUE" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="EDIT_QUANT_VALUE" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="EDIT_CAT_VALUE" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="EDIT_ADDED_VALUE" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="EDIT_EXPIRES_VALUE" Grid.Row="2" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                        <TextBox x:Name="EDIT_LIMIT_VALUE" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+
+                        <Button x:Name="EDIT_SUBMIT" Click="EDIT_SUBMIT_EXECUTE" Grid.Row="4" Grid.Column="3" BorderBrush="Black" BorderThickness="1" FontFamily="consolas" FontSize="14" Content="Submit"/>                        
 
                     </Grid>
 
