@@ -33,9 +33,6 @@ namespace LifeDB.Resources.Code
         public static SQLiteConnection Connect()
         {
 
-            //new SQLiteConnection("Data Source=database.db; Version = 3; New = True; Compress = True;");
-            //Data Source = file://LifeDB//Resources//Files//Db//myDatabase.db
-
             Boolean genTable;
             String exists;
             if (File.Exists("..//LifeDB//Resources//Files//Db//myDatabase.db"))
@@ -49,8 +46,7 @@ namespace LifeDB.Resources.Code
                 genTable = true;
             }
 
-            //NOTE TO SELF: SET DEBUG EXECUTION TO THE LIFEDB directory --
-            //And ..// seemed to work...hopefully that sticks, but idk...pathing is tarded sometimes :: Note...dropping //lifedb won't work
+           
             SQLiteConnection sqlite_conn = new SQLiteConnection("Data Source = ..//LifeDB//Resources//Files//Db//myDatabase.db;" +
                                                                  "SQLITE_USE_URI = 1" +
                                                                  "Version = 3;" +
@@ -60,8 +56,6 @@ namespace LifeDB.Resources.Code
                                                                  "Compress = True;");
 
 
-
-            // Open the connection:
             try
             {
                 sqlite_conn.Open();
@@ -103,38 +97,16 @@ namespace LifeDB.Resources.Code
 
             SQLiteCommand command;
 
-            //So...SQLite has a different (loose) type system...the below is a gen'd mySql, the original plan (mySql commands aren't 100% compatible O.~ it's always somethin' isn't it)
-            /*
-                string statement = "CREATE TABLE `myTable`(" +
-                    "`id` INT UNSIGNED NOT NULL AUTO_INCREMENT," +
-                    "`item_name` VARCHAR(256) NOT NULL," +
-                    "`item_quantity` INT UNSIGNED NULL," +
-                    "`item_category` VARCHAR(256) NULL," +
-                    "`added` DATE NOT NULL DEFAULT (current_date())," +
-                    "`expires` DATE NULL," +
-                    "`limit` INT NULL," +
-                    "PRIMARY KEY(`id`)," +
-                    "UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE)";
-                                                                         */
-            //id will auto-increment on missing/null vals...
-            //No trailing commas :: keywords (eg. limit) are escaped w/ backticks (`)
             string statement = "CREATE TABLE myTable(" +
                 "id INTEGER PRIMARY KEY NOT NULL, " +
                 "item_name TEXT, " +
                 "item_quantity INTEGER NULL, " +
                 "item_category TEXT NULL, " +
-                "added NUMERIC NOT NULL DEFAULT(CURRENT_DATE), " +
+                "added NUMERIC NULL, " +
                 "expires NUMERIC NULL, " +
                 "`limit` INTEGER NULL " +
                 ")";
 
-            //Console.Beep();
-            //Console.Beep();
-            //Console.Beep();
-            //Console.Beep();
-
-
-            //id, item_name, item_quantity, item_category, added, expires, limit
 
             command = con.CreateCommand();
             command.CommandText = statement;
@@ -146,7 +118,7 @@ namespace LifeDB.Resources.Code
         public static Boolean Add(SqlPacket sqlPacket)
         {
 
-            //item_name, item_quantity, item_category, added, expires, limit
+            //id, item_name, item_quantity, item_category, added, expires, limit
 
             try
             {
@@ -349,8 +321,8 @@ namespace LifeDB.Resources.Code
                 command = SqlDb.connection.CreateCommand(); 
                 command.CommandText = "Select COUNT(id) from myTable"; 
                 SQLiteDataReader DataReader = command.ExecuteReader(); 
-                DataReader.Read();  //Result sets start at 0 location, must be read once to tick to first result/row :: may actually be unnecessary here, but Sqlite is a bit screwy so...
-                lastCount = (Int32)DataReader.GetInt64(0); ///ISSUE HERE
+                DataReader.Read();  
+                lastCount = (Int32)DataReader.GetInt64(0); 
 
             }
             catch (Exception e)
@@ -361,7 +333,6 @@ namespace LifeDB.Resources.Code
         }
 
 
-        //BETWEEN OPERATOR SHOULD BE INCLUSIVE/INCLUSIVE
         public static SQLiteDataReader GetIdRange(int startId, int endId)
         {
 
@@ -440,15 +411,9 @@ namespace LifeDB.Resources.Code
     }
 
 
-
-    //EXPERIMENTATION
-    //Edit: Mmmmm, yeees...look at all my pokemon cards... (✿◕‿◕✿)
     public class SqlPacket
     {
        
-        //need a higher order system for these arbitrary nums 
-        //long SqlPacketId;
-        //long SqlPacketVersion;
 
         IList<KVP<String, String>> Mappings = new List<KVP<String, String>>(); 
     
@@ -558,7 +523,6 @@ namespace LifeDB.Resources.Code
         }
 
 
-        // USED BY EDIT AND REMOVE -- NEEDS REWORK.  It shouldn't default the ' or ' '
         public IList<String> GetValues()
         {
             IList<String> ValueList = new List<String>();
@@ -608,13 +572,19 @@ namespace LifeDB.Resources.Code
             foreach (KVP<String, String> pair in Mappings)
             {
 
+                ///Path A: value is int 
+
+                //if null, check if it's in dates places correlated to counter, if true trydateonly, else apply null...if not null, fallthough to try int32
                 if (pair.GetValue() == null | pair.GetValue() == "" | pair.GetValue() == " ")
                     {
+                        
                         if (counter == 5 | counter == 6) goto TryDateOnly;
+                        
                         sb.Append("NULL");
                         if (counter < Mappings.Count()) sb.Append(',');
                         counter++;
                         continue;
+
                     }
                     
 
@@ -627,6 +597,7 @@ namespace LifeDB.Resources.Code
                     Int32 Oint;
                     Boolean intified = Int32.TryParse(pair.GetValue(), out Oint);
 
+                    //if int, stringify it and continue, else trydateonly
                     if (intified == true)
                     {
 
@@ -651,9 +622,17 @@ namespace LifeDB.Resources.Code
     TryDateOnly:try
                 {
                    
+                    //new default date setter for added -- always do things imperatively >.> never trust others to work right
+                    if(counter == 5 && pair.GetValue() == null | pair.GetValue() == "")
+                    {
+                        var date = System.DateOnly.FromDateTime(DateTime.Now);
+                        pair.SetValue(date.ToString());
+                    }
+
                     DateOnly ODate;
                     Boolean dateified = DateOnly.TryParse(pair.GetValue(), out ODate);
 
+                    //if a date, pass the format (note: format lost) else trystring
                     if (dateified == true)
                     {
                         //var fix = ODate.ToString(); 
@@ -677,8 +656,9 @@ namespace LifeDB.Resources.Code
 
                         continue;
 
-                    }else goto TryString;
-                    
+                    }
+                    else goto TryString;
+
 
                 }
                 catch (Exception e2)
@@ -687,10 +667,11 @@ namespace LifeDB.Resources.Code
                 }
 
 
-      //Standard String Option (original base choice / the OG code)         
+      //Standard String Option (original base choice / the OG code)
+      //Last ditch, use ' to surround string if not null, making a string literal, else, pass a space char for default
       TryString:
 
-                sb.Append('\''); //REVIEW ALL OF THE BELOW! :: If adding id, added, expires, and limit in view...it atleast posts something!
+                sb.Append('\''); 
 
                 if (pair.GetValue() == null)
                     sb.Append(' ');
@@ -706,12 +687,7 @@ namespace LifeDB.Resources.Code
             return sb.ToString();
 
         }
-
-        /*Duplikey Method? :: For sh_ts and giggles?
-        //(Immediate implication: 1 key many vals, secondary...would serve as an inline multidimentional arraylistmap for building many sqlpackets on interation)
-        //Would be good to have an abstraction above this...call it a handler or something, but regardless...it could hold an array of sqlpackets, duplikey or otherwise
-        //it'd also get the responsibility of scheduling/(multithreading) the writes
-        //[could possibly require null keys after the first to signify 1 key many vals]*/
+/
 
     }
 
@@ -737,7 +713,10 @@ namespace LifeDB.Resources.Code
             return Value;
         }
 
-
+        public void SetValue(V? newValue)
+        {
+            this.Value = newValue;
+        }
 
     }
 
