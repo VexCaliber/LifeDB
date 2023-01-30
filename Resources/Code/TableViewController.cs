@@ -312,7 +312,7 @@ namespace LifeDB.Resources.Code
         //------------------------------//
 
         //I NEED A BRILLIANT BIT OF WORK HERE!
-        private static String DateNormalizer(String RawDate)
+        internal static String DateNormalizer(String RawDate)
         {
             //len = 7  len = 8   len=5  len=6
             //2020112  20200112  20112  200112

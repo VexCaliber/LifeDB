@@ -76,6 +76,10 @@ namespace LifeDB
 
         }
 
+
+        //-----------------------------------------------------------------//
+
+
         private void ADD_SUBMIT_EXECUTE(object sender, RoutedEventArgs e)
         {
             try
@@ -101,15 +105,44 @@ namespace LifeDB
             }
 
             ADD_SUBMIT.Background = System.Windows.Media.Brushes.LightGreen;
-            TableViewController.Update(true);//throwing null pointer! ::EDIT, now throws indexoutofrange
-            //need a call to update table!
+            TableViewController.Update(true);
 
         }
 
         private void EDIT_SUBMIT_EXECUTE(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                String limitFix = EDIT_LIMIT.Content.ToString();
+                limitFix = limitFix.Insert(0, "`");
+                limitFix = limitFix.Insert(limitFix.Length, "`");
+
+                //String prebuild = "";
+
+                
+                Pump(Command.edit, EDIT_ID.Content.ToString(),      EDIT_ID_VALUE.Text,
+                                   EDIT_NAME.Content.ToString(),    EDIT_NAME_VALUE.Text,
+                                   EDIT_QUANT.Content.ToString(),   EDIT_QUANT_VALUE.Text.ToString(),
+                                   EDIT_CAT.Content.ToString(),     EDIT_CAT_VALUE.Text.ToString(),
+                                   EDIT_ADDED.Content.ToString(),   EDIT_ADDED_VALUE.Text.ToString(),
+                                   EDIT_EXPIRES.Content.ToString(), EDIT_EXPIRES_VALUE.Text.ToString(),
+                                   limitFix,                        ADD_LIMIT_VALUE.Text);
+
+            }
+            catch (Exception ex)
+            {
+                EDIT_SUBMIT.Background = System.Windows.Media.Brushes.Red;
+                USER_CONSOLE.Clear();
+                USER_CONSOLE.Text = ex.ToString();
+            }
+
+            EDIT_SUBMIT.Background = System.Windows.Media.Brushes.LightGreen;
+            TableViewController.Update(true);
+            
 
         }
+
+
     }
 
 

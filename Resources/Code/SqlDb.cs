@@ -149,28 +149,79 @@ namespace LifeDB.Resources.Code
             var values = sqlPacket.GetValues();
 
             Func<String, String, String> MergeIdAssigned = (s1, s2) => s1 + " = " + s2;
-            Func<String, String, String> MergilizeAssignments = (s1, s2) => s1 + " = '" + s2 + "', ";
-            Func<String, String, String> MergilizeAssignmentsWOTrailingComma = (s1, s2) => s1 + " = '" + s2 + "' ";
+            Func<String, String, String> MergilizeStringLiteralAssignments = (s1, s2) => s1 + " = '" + s2 + "', ";
+            Func<String, String, String> MergilizeNonStringLiteralAssignments = (s1, s2) => s1 + " = " + s2 + ", ";
+            Func<String, String, String> MergilizeStringLiteralAssignmentsWOTrailingComma = (s1, s2) => s1 + " = '" + s2 + "' ";
+            Func<String, String, String> MergilizeNonStringLiteralAssignmentsWOTrailingComma = (s1, s2) => s1 + " = " + s2 + " ";
+
+            //--------------------------------//
 
             String ASSIGNED = "";
             StringBuilder ASSIGNMENTS = new();
 
-            //Brain says this is ok...so I'm going with it...review me!
-            int adjustedPairCount = ((keys.Count() - 1 + values.Count() - 1) / 2);
-            for (int i = 0; i != adjustedPairCount; i++)
-            {
-                //SET ContactName = 'Alfred Schmidt', City = 'Frankfurt'
+            //--------------------------------//
 
+            int pairCount = ((keys.Count()-1 + values.Count()-1) / 2);//((keys.Count() - 1 + values.Count() - 1) / 2); //index adjustment
+            for (int i = 0; i < pairCount; i++)
+            {
+                
+                //The WHERE
                 if (i == 0)
                 {
                     ASSIGNED = MergeIdAssigned(keys[i], values[i]);
                     continue;
                 }
+                
 
-                if (i != adjustedPairCount - 1)
-                    ASSIGNMENTS.Append(MergilizeAssignments(keys[i], values[i]));
+                ///OPERATING ON THE ASSUMPTION ALL VALUES PROVIDED -- eg. Stateful >.>
+                //    2          3              4            5       6       7      
+                //item_name, item_quantity, item_category, added, expires, limit
+                //'string',  int32,         'string'       int32, int32,   int32   
+
+                if (i < pairCount-1)
+
+                    switch (i)
+                    {
+                        case 2: 
+                            ASSIGNMENTS.Append(MergilizeStringLiteralAssignments(keys[i], values[i])); 
+                            break;
+                        
+                        case 3: 
+                            ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(keys[i], values[i]));
+                            break;
+
+                        case 4: 
+                            ASSIGNMENTS.Append(MergilizeStringLiteralAssignments(keys[i], values[i]));
+                            break;
+
+                        case 5 | 6:
+                            DateOnly ODate;
+                            Boolean dateified = DateOnly.TryParse(values[i], out ODate);
+                            if(dateified == true)
+                            {
+                                int numerified;
+                                String tmp = "";
+
+                                tmp += ODate.Year + "" + ODate.Month + "" + ODate.Day;
+                                numerified = Int32.Parse(tmp);
+                                ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(keys[i], numerified.ToString()));
+                                break;
+                            }
+                            else
+                            {
+                                values[i].Replace(values[i], "NULL");
+                                ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(keys[i], values[i]));
+                                break;
+                            }
+
+                        default: MessageHandler.userConsole.Text += i; break;//throw new ArgumentException("INVALID ARGUMENT COUNT");
+
+                    }
+ 
                 else
-                    ASSIGNMENTS.Append(MergilizeAssignmentsWOTrailingComma(keys[i], values[i]));
+                    ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignmentsWOTrailingComma(keys[i], values[i]));
+                ///OPERATING ON THE ASSUMPTION ALL VALUES PROVIDED
+
 
 
 
@@ -450,10 +501,10 @@ namespace LifeDB.Resources.Code
             for(int k = 0, v = k+1; k <= pairs.Length-1; k += 2, v = k+1)
             {
                 Add(pairs[k], pairs[v]);
-                Console.WriteLine(pairs[k], pairs[v]);
+                //Console.WriteLine(pairs[k], pairs[v]);
             }
 
-            Console.WriteLine("SqlPacket Build Successful! =)");
+            //Console.WriteLine("SqlPacket Build Successful! =)");
 
             return this;
 
@@ -477,6 +528,7 @@ namespace LifeDB.Resources.Code
         }
 
 
+        //Removes Pair...fix this...
         public void RemoveValue(String value)
         {
             var copy = Copy(Mappings);
@@ -491,6 +543,12 @@ namespace LifeDB.Resources.Code
                 }
             }
 
+        }
+
+
+        public void RemovePair(String key)
+        {
+            RemoveKey(key);
         }
 
 
@@ -526,20 +584,22 @@ namespace LifeDB.Resources.Code
         public IList<String> GetValues()
         {
             IList<String> ValueList = new List<String>();
-            StringBuilder sb = new();
+            //StringBuilder sb = new();
 
             foreach (KVP<String, String> pair in Mappings)
             {
-                sb.Append('\'');
-
-                if (pair.GetValue() == null)
-                    sb.Append(' ');
-                else
-                    sb.Append(pair.GetValue());
                 
-                sb.Append('\'');
+                ValueList.Add(pair.GetValue());
+                //sb.Append('\'');
 
-                ValueList.Add(sb.ToString());
+                //if (pair.GetValue() == null)
+                //    sb.Append(' ');
+                //else
+                   // sb.Append(pair.GetValue());
+                
+                //sb.Append('\'');
+
+                //ValueList.Add(sb.ToString());
             }
 
             return ValueList;
