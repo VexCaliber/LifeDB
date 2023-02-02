@@ -120,13 +120,13 @@ namespace LifeDB
                 //String prebuild = "";
 
                 
-                Pump(Command.edit, EDIT_ID.Content.ToString(),      EDIT_ID_VALUE.Text,
-                                   EDIT_NAME.Content.ToString(),    EDIT_NAME_VALUE.Text,
+                Pump(Command.edit, EDIT_ID.Content.ToString(),      EDIT_ID_VALUE.Text.ToString(),
+                                   EDIT_NAME.Content.ToString(),    EDIT_NAME_VALUE.Text.ToString(),
                                    EDIT_QUANT.Content.ToString(),   EDIT_QUANT_VALUE.Text.ToString(),
                                    EDIT_CAT.Content.ToString(),     EDIT_CAT_VALUE.Text.ToString(),
                                    EDIT_ADDED.Content.ToString(),   EDIT_ADDED_VALUE.Text.ToString(),
                                    EDIT_EXPIRES.Content.ToString(), EDIT_EXPIRES_VALUE.Text.ToString(),
-                                   limitFix,                        ADD_LIMIT_VALUE.Text);
+                                   limitFix,                        ADD_LIMIT_VALUE.Text.ToString());
 
             }
             catch (Exception ex)

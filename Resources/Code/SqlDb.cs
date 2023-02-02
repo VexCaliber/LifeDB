@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.Design.Serialization;
 using System.Data.SQLite;
 using System.Data.SqlTypes;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -144,9 +145,11 @@ namespace LifeDB.Resources.Code
 
         public static Boolean Edit(SqlPacket sqlPacket)
         {
+            
+            ///var keys = sqlPacket.GetKeys();
+            ///var values = sqlPacket.GetValues();
 
-            var keys = sqlPacket.GetKeys();
-            var values = sqlPacket.GetValues();
+            var mappings = sqlPacket.GetMappings();
 
             Func<String, String, String> MergeIdAssigned = (s1, s2) => s1 + " = " + s2;
             Func<String, String, String> MergilizeStringLiteralAssignments = (s1, s2) => s1 + " = '" + s2 + "', ";
@@ -161,24 +164,70 @@ namespace LifeDB.Resources.Code
 
             //--------------------------------//
 
-            int pairCount = ((keys.Count()-1 + values.Count()-1) / 2);//((keys.Count() - 1 + values.Count() - 1) / 2); //index adjustment
-            for (int i = 0; i < pairCount; i++)
+            //int pairCount = ((keys.Count()-1 + values.Count()-1) / 2);//((keys.Count() - 1 + values.Count() - 1) / 2); //index adjustment
+            for (int i = 0; i < mappings.Count; i++) //i < pairCount
             {
                 
-                //The WHERE
-                if (i == 0)
+                //The Null Purge
+                if (mappings[i].GetValue() == null | mappings[i].GetValue() == "" | mappings[i].GetValue() == " ")
                 {
-                    ASSIGNED = MergeIdAssigned(keys[i], values[i]);
+                    mappings.RemoveAt(i);
                     continue;
                 }
-                
 
+                //The WHERE
+                if (mappings[i].GetKey() == "id")
+                {
+                    ASSIGNED = MergeIdAssigned(mappings[i].GetKey(), mappings[i].GetValue());
+                    continue;
+                }
+
+                //The Value Chain
+                switch (mappings[i].GetKey())
+                {
+                    case "item_name":
+                        ASSIGNMENTS.Append(MergilizeStringLiteralAssignments(mappings[i].GetKey(), mappings[i].GetValue()));
+                        break;
+
+                    case "item_quantity":
+                        ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(mappings[i].GetKey(), mappings[i].GetValue()));
+                        break;
+
+                    case "item_category": 
+                        ASSIGNMENTS.Append(MergilizeStringLiteralAssignments(mappings[i].GetKey(), mappings[i].GetValue()));
+                        break;
+
+                    case "added" or "expires":
+                        DateOnly ODate;
+                        Boolean dateified = DateOnly.TryParse(mappings[i].GetValue(), out ODate);
+                        if (dateified == true)
+                        { 
+                            String tmp = ODate.Year + "" + ODate.Month + "" + ODate.Day;
+                            int numerified = Int32.Parse(tmp);
+                            ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(mappings[i].GetKey(), numerified.ToString()));
+                            break;
+                        }
+                        else
+                        {
+                            mappings.RemoveAt(i);
+                            break;
+                        }
+
+                    case "`limit`":
+                        ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(mappings[i].GetKey(), mappings[i].GetValue()));
+                        break;
+
+
+                }
+
+
+                /*
                 ///OPERATING ON THE ASSUMPTION ALL VALUES PROVIDED -- eg. Stateful >.>
                 //    2          3              4            5       6       7      
                 //item_name, item_quantity, item_category, added, expires, limit
                 //'string',  int32,         'string'       int32, int32,   int32   
 
-                if (i < pairCount-1)
+                if (i < pairCount)
 
                     switch (i)
                     {
@@ -222,9 +271,15 @@ namespace LifeDB.Resources.Code
                     ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignmentsWOTrailingComma(keys[i], values[i]));
                 ///OPERATING ON THE ASSUMPTION ALL VALUES PROVIDED
 
+                MessageHandler.userConsole.Text += ASSIGNMENTS;*/
 
 
-
+            } 
+            
+            //Remove Trailing Comma    
+            if(true)
+            {
+                ASSIGNMENTS.Remove(ASSIGNMENTS.Length-2, 1);
             }
 
             //WHERE can take a number or a 'string', we need to test parse the first value...
@@ -250,7 +305,8 @@ namespace LifeDB.Resources.Code
             }
 
             return true;
-
+            
+            
         }
 
 
@@ -746,6 +802,12 @@ namespace LifeDB.Resources.Code
 
             return sb.ToString();
 
+        }
+
+
+        public IList<KVP<String, String>> GetMappings()
+        {
+            return Mappings;
         }
 
 
