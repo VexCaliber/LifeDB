@@ -88,13 +88,13 @@ namespace LifeDB
                 limitFix = limitFix.Insert(0, "`");
                 limitFix = limitFix.Insert(limitFix.Length, "`");
                 //:: Edit it have pump return a bool...use the bool the set the button pass/fail color
-                Pump(Command.add, ADD_ID.Content.ToString(),        ADD_ID_VALUE.Text, 
-                                  ADD_NAME.Content.ToString(),      ADD_NAME_VALUE.Text,
+                Pump(Command.add, ADD_ID.Content.ToString(),        ADD_ID_VALUE.Text.ToString(), 
+                                  ADD_NAME.Content.ToString(),      ADD_NAME_VALUE.Text.ToString(),
                                   ADD_QUANT.Content.ToString(),     ADD_QUANT_VALUE.Text.ToString(),
                                   ADD_CAT.Content.ToString(),       ADD_CAT_VALUE.Text.ToString(),
                                   ADD_ADDED.Content.ToString(),     ADD_ADDED_VALUE.Text.ToString(),
                                   ADD_EXPIRES.Content.ToString(),   ADD_EXPIRES_VALUE.Text.ToString(),
-                                  limitFix,                         ADD_LIMIT_VALUE.Text);
+                                  limitFix,                         ADD_LIMIT_VALUE.Text.ToString());
 
             }
             catch(Exception ex)
@@ -116,9 +116,6 @@ namespace LifeDB
                 String limitFix = EDIT_LIMIT.Content.ToString();
                 limitFix = limitFix.Insert(0, "`");
                 limitFix = limitFix.Insert(limitFix.Length, "`");
-
-                //String prebuild = "";
-
                 
                 Pump(Command.edit, EDIT_ID.Content.ToString(),      EDIT_ID_VALUE.Text.ToString(),
                                    EDIT_NAME.Content.ToString(),    EDIT_NAME_VALUE.Text.ToString(),

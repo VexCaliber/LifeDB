@@ -19,7 +19,6 @@ using FontFamily = System.Windows.Media.FontFamily;
 namespace LifeDB.Resources.Code
 {
 
-    //add populate method for startup as a conv_method
 
     public static class TableViewController
     {
@@ -44,7 +43,7 @@ namespace LifeDB.Resources.Code
 
             if (reader == null) throw new Exception("Failed to get data from table via Select All @TableViewController.Generate()");
 
-            var columns = reader.FieldCount; MessageHandler.userConsole.Text += columns;
+            var columns = reader.FieldCount;
             
             List<String> values = new List<String>();
             
@@ -63,12 +62,10 @@ namespace LifeDB.Resources.Code
                         var preform = reader.GetValue(i);
                         var d = preform.ToString();
 
-                        //MessageHandler.userConsole.Text += d + " ";//date.ToString()
                         values.Add(DateNormalizer(d));
                     }
                     else
-                        values.Add(reader.GetValue(i).ToString()); //reader.GetString(i)
-                        //MessageHandler.userConsole.Text += i;//reader.GetValue(i).ToString();
+                        values.Add(reader.GetValue(i).ToString());
 
                 }
 
@@ -181,8 +178,6 @@ namespace LifeDB.Resources.Code
 
             if(fetchNewRows == true) {
 
-                //Thread.Sleep(50000);
-
                 SqlDb.DBCount(); //REQUIRED
                 int startingRow = currentRow + 1;
 
@@ -201,15 +196,7 @@ namespace LifeDB.Resources.Code
        
         public static void Init(System.Windows.Documents.Table t)
         {
-         
                 table = t;
-                
-               
-            //GenerateRow(new List<string> { "a", "b", "c", "d", "e", "f", });
-            //GenerateRow(new List<string> { "b", "b", "c", "d", "e", "f", });
-            //GenerateRow(new List<string> { "c", "b", "c", "d", "e", "f", });
-
-
         }
 
         
@@ -225,7 +212,7 @@ namespace LifeDB.Resources.Code
 
                 table.RowGroups[0].Rows.Add(GenerateGenericRowA());
                 currentRow++;
-                var cells = table.RowGroups[0].Rows[currentRow].Cells.ToList(); //DBCOUNT() COMPLAINS ABOUT THESE
+                var cells = table.RowGroups[0].Rows[currentRow].Cells.ToList();
                 
                 //clean ze row ///NO LONGER NEEDED HERE ::: MOVE LATER
                 //for(int i = 0; i < cells.Count-1; i++) table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Clear();

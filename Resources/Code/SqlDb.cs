@@ -154,8 +154,8 @@ namespace LifeDB.Resources.Code
             Func<String, String, String> MergeIdAssigned = (s1, s2) => s1 + " = " + s2;
             Func<String, String, String> MergilizeStringLiteralAssignments = (s1, s2) => s1 + " = '" + s2 + "', ";
             Func<String, String, String> MergilizeNonStringLiteralAssignments = (s1, s2) => s1 + " = " + s2 + ", ";
-            Func<String, String, String> MergilizeStringLiteralAssignmentsWOTrailingComma = (s1, s2) => s1 + " = '" + s2 + "' ";
-            Func<String, String, String> MergilizeNonStringLiteralAssignmentsWOTrailingComma = (s1, s2) => s1 + " = " + s2 + " ";
+            //Func<String, String, String> MergilizeStringLiteralAssignmentsWOTrailingComma = (s1, s2) => s1 + " = '" + s2 + "' ";
+            //Func<String, String, String> MergilizeNonStringLiteralAssignmentsWOTrailingComma = (s1, s2) => s1 + " = " + s2 + " ";
 
             //--------------------------------//
 
@@ -274,17 +274,24 @@ namespace LifeDB.Resources.Code
                 MessageHandler.userConsole.Text += ASSIGNMENTS;*/
 
 
-            } 
+            }
+
+
+            //The Backup Where
+            if (ASSIGNED == "" | ASSIGNED == " " | ASSIGNED == null)
+            {
+                //get the first assignment and use as backup where
+                var tmp = ASSIGNMENTS.ToString().Split(',')[0];
+                ASSIGNED = tmp.Remove(','); //just in case
+            }
+
             
-            //Remove Trailing Comma    
-            if(true)
+            //Remove Trailing Comma (but not space) /////////////////////////////////FIX ME! :: failure on using only id & limit.    
+            if (true)
             {
                 ASSIGNMENTS.Remove(ASSIGNMENTS.Length-2, 1);
             }
 
-            //WHERE can take a number or a 'string', we need to test parse the first value...
-            //we won't need it for the basic usage, but for future extentions that will use something else...we must 
-            //but sql commands are strings...so it should parse it on its end...I'll skip and we'll see what happens
 
             try
             {
