@@ -139,7 +139,31 @@ namespace LifeDB
 
         }
 
+        private void REMOVE_SUBMIT_EXECUTE(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                String limitFix = REMOVE_SELECTION.Text.ToString();
+                limitFix = limitFix.Insert(0, "`");
+                limitFix = limitFix.Insert(limitFix.Length, "`");
 
+                if(REMOVE_SELECTION.Text == "limit")
+                    Pump(Command.remove, limitFix, REMOVE_INPUT.Text.ToString());
+                else
+                    Pump(Command.remove, REMOVE_SELECTION.Text.ToString(),REMOVE_INPUT.Text.ToString());
+
+
+            }catch (Exception ex)
+            {
+                REMOVE_SUBMIT.Background = System.Windows.Media.Brushes.Red;
+                USER_CONSOLE.Clear();
+                USER_CONSOLE.Text = ex.ToString();
+            }
+
+            REMOVE_SUBMIT.Background = System.Windows.Media.Brushes.LightGreen;
+            TableViewController.Update(true);
+
+        }
     }
 
 

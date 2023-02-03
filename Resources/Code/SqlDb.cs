@@ -221,59 +221,6 @@ namespace LifeDB.Resources.Code
                 }
 
 
-                /*
-                ///OPERATING ON THE ASSUMPTION ALL VALUES PROVIDED -- eg. Stateful >.>
-                //    2          3              4            5       6       7      
-                //item_name, item_quantity, item_category, added, expires, limit
-                //'string',  int32,         'string'       int32, int32,   int32   
-
-                if (i < pairCount)
-
-                    switch (i)
-                    {
-                        case 2: 
-                            ASSIGNMENTS.Append(MergilizeStringLiteralAssignments(keys[i], values[i])); 
-                            break;
-                        
-                        case 3: 
-                            ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(keys[i], values[i]));
-                            break;
-
-                        case 4: 
-                            ASSIGNMENTS.Append(MergilizeStringLiteralAssignments(keys[i], values[i]));
-                            break;
-
-                        case 5 | 6:
-                            DateOnly ODate;
-                            Boolean dateified = DateOnly.TryParse(values[i], out ODate);
-                            if(dateified == true)
-                            {
-                                int numerified;
-                                String tmp = "";
-
-                                tmp += ODate.Year + "" + ODate.Month + "" + ODate.Day;
-                                numerified = Int32.Parse(tmp);
-                                ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(keys[i], numerified.ToString()));
-                                break;
-                            }
-                            else
-                            {
-                                values[i].Replace(values[i], "NULL");
-                                ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignments(keys[i], values[i]));
-                                break;
-                            }
-
-                        default: MessageHandler.userConsole.Text += i; break;//throw new ArgumentException("INVALID ARGUMENT COUNT");
-
-                    }
- 
-                else
-                    ASSIGNMENTS.Append(MergilizeNonStringLiteralAssignmentsWOTrailingComma(keys[i], values[i]));
-                ///OPERATING ON THE ASSUMPTION ALL VALUES PROVIDED
-
-                MessageHandler.userConsole.Text += ASSIGNMENTS;*/
-
-
             }
 
 
@@ -322,27 +269,79 @@ namespace LifeDB.Resources.Code
         public static Boolean Remove(SqlPacket sqlPacket)
         {
 
-            var key = sqlPacket.GetKeys();
-            var value = sqlPacket.GetValues();
+            var mappings = sqlPacket.GetMappings(); //a type and a value
 
-            Func<String, String, String> MergeIdAssigned = (s1, s2) => s1 + " = " + s2;
+            Func<String, String, String> MergilizeStringLiteralAssignmentsWOTrailingComma = (s1, s2) => s1 + " = '" + s2 + "' ";
+            Func<String, String, String> MergilizeNonStringLiteralAssignmentsWOTrailingComma = (s1, s2) => s1 + " = " + s2 + " ";
 
-            String ASSIGNED = MergeIdAssigned(key[0], value[0]);
+            String ASSIGNED = "";
 
-            try
+            for (int i = 0; i < mappings.Count; i++) //i < pairCount
             {
-                SQLiteCommand command;
-                command = SqlDb.connection.CreateCommand();
-                command.CommandText = "DELETE FROM myTable WHERE " + ASSIGNED;
-                command.ExecuteNonQuery();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString() + " @SqlDB.Remove(SqlPacket sqlPacket)");
-                return false;
-            }
 
-            return true;
+                //The Null Purge
+                if (mappings[i].GetValue() == null | mappings[i].GetValue() == "" | mappings[i].GetValue() == " ")
+                {
+                    throw new Exception("Invalid Date");
+                }
+
+                //The Value Chain
+                switch (mappings[i].GetKey())
+                {
+                    case "id":
+                        ASSIGNED = MergilizeNonStringLiteralAssignmentsWOTrailingComma(mappings[i].GetKey(), mappings[i].GetValue());
+                        break;
+
+                    case "item_name":
+                        ASSIGNED = MergilizeStringLiteralAssignmentsWOTrailingComma(mappings[i].GetKey(), mappings[i].GetValue());
+                        break;
+
+                    case "item_quantity":
+                        ASSIGNED = MergilizeNonStringLiteralAssignmentsWOTrailingComma(mappings[i].GetKey(), mappings[i].GetValue());
+                        break;
+
+                    case "item_category":
+                        ASSIGNED = MergilizeStringLiteralAssignmentsWOTrailingComma(mappings[i].GetKey(), mappings[i].GetValue());
+                        break;
+
+                    case "added" or "expires":
+                        DateOnly ODate;
+                        Boolean dateified = DateOnly.TryParse(mappings[i].GetValue(), out ODate);
+                        if (dateified == true)
+                        {
+                            String tmp = ODate.Year + "" + ODate.Month + "" + ODate.Day;
+                            int numerified = Int32.Parse(tmp);
+                            ASSIGNED = MergilizeNonStringLiteralAssignmentsWOTrailingComma(mappings[i].GetKey(), numerified.ToString());
+                            break;
+                        }
+                        else
+                        {
+                            throw new Exception("Invalid Date");
+                        }
+
+                    case "`limit`":
+                        ASSIGNED = MergilizeNonStringLiteralAssignmentsWOTrailingComma(mappings[i].GetKey(), mappings[i].GetValue());
+                        break;
+
+
+                }
+
+            }
+                
+                try
+                {
+                    SQLiteCommand command;
+                    command = SqlDb.connection.CreateCommand();
+                    command.CommandText = "DELETE FROM myTable WHERE " + ASSIGNED;
+                    command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString() + " @SqlDB.Remove(SqlPacket sqlPacket)");
+                    return false;
+                }
+
+                return true;
 
         }
 

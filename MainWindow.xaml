@@ -474,21 +474,45 @@
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="200"/>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
+                        <TextBlock Grid.Column="1" Grid.Row="3" Text="Where" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontFamily="consolas"/>
+                        <TextBlock Grid.Column="3" Grid.Row="3" Text="equals" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontFamily="consolas"/>
+
+
+                        <ComboBox x:Name="REMOVE_SELECTION" Grid.Column="2" Grid.Row="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" FontWeight="Bold" FontFamily="consolas">
+
+                            <ComboBoxItem Content="id"              FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                            <ComboBoxItem Content="item_name"       FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                            <ComboBoxItem Content="item_quanitity"  FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                            <ComboBoxItem Content="item_category"   FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                            <ComboBoxItem Content="added"           FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                            <ComboBoxItem Content="expires"         FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                            <ComboBoxItem Content="limit"           FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+
+                        </ComboBox>
+
+                        <Border Grid.Column="4" Grid.Row="3" BorderBrush="Gray" BorderThickness="2">
+                            <TextBox x:Name="REMOVE_INPUT" Background="LightGray"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                        </Border>
+                        
+
+                        <Button x:Name="REMOVE_SUBMIT" Click="REMOVE_SUBMIT_EXECUTE" Grid.Row="4" Grid.Column="3" BorderBrush="Black" BorderThickness="1" FontFamily="consolas" FontSize="14" Content="Submit"/>
 
                     </Grid>
 
