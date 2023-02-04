@@ -173,6 +173,33 @@ namespace LifeDB.Resources.Code
         }
 
         
+        public static void Deletify()
+        {
+
+            //So...I'm getting the wall of rejections from Indeed r/n and honestly...I'm so fxcking done...
+            //this is just gonna be an outline because fxck it
+
+            //find the deleted row
+            //delete it from the collection / the view
+            //adjust the row colors below to fit the even/odd background color alternation (cascade)
+            //rollback the current row (currentRow--)
+            //maybe update the DBCount
+            //burn the hr ladies at the stake
+            //transition to improve chances at a fxcking job to make enough to live a normal fxcking life
+            //whip myself for the "crime" of being a white male
+            //continue telling myself that everything I've learned over the course of life will actually pay off one day~
+            //while the country continues to burn at the behest of feral psychopaths...
+            //tell myself that I'll finally get ahold of a rasp-pi 4 for testing
+            //set up the asyncs for intel to monitor the table meta and generate suggestions and recommendations in a line by line format
+            //ruthlessly pummel anybody who demands a college degree for a job an 8th grader can do.
+            
+            ///I'm tired of working hard to get nowhere, whilst also being expected to give more and more...
+            ///...and that's it for today...enjoy! ;)
+
+
+        }
+
+
         public static void Update(Boolean fetchNewRows)
         {
 
@@ -186,7 +213,9 @@ namespace LifeDB.Resources.Code
                 
             }
             
-            Agitate(SqlDb.GetVisibleIdRange());            
+            Agitate(SqlDb.GetVisibleIdRange());
+
+            Deletify();
 
         }
 
