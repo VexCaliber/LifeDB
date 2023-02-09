@@ -174,12 +174,34 @@ namespace LifeDB.Resources.Code
         }
 
         
-        public static void Deletify()
+        public static void Deletify(List<KVP<String, String>> actions)
         {
 
-            ///Update: I can't even...I'm slipping into black pill r/n....so once again, I'm out
-            ///
-            
+            int columns = 7;
+            //int activeRow = 1;
+            //var cells = table.RowGroups[0].Rows[activeRow].Cells.ToList();
+
+            foreach(TableRow row in table.RowGroups[0].Rows)
+            {
+
+                foreach (TableColumn column in table.Columns)
+                {
+
+                    foreach (TableCell cell in row.Cells)
+                    {
+
+                        foreach (KVP<String, String> pair in actions)
+                        {
+                            //if(pair.GetKey == table.Columns.)
+                        }
+
+                        //if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun() == )
+
+                    }
+
+                }
+
+            }
 
             /*
             SQLiteDataReader reader = SqlDb.SelectAll();
@@ -231,9 +253,42 @@ namespace LifeDB.Resources.Code
         }
 
         
-        
+        public static void parseDelete(String? commandText)
+        {
 
-    
+            if (commandText == null 
+                | commandText == "DELETE FROM myTable WHERE " + ""
+                | commandText == "DELETE FROM myTable WHERE " + " ") return;
+
+            //" + ASSIGNED;
+            String[] pieces = commandText.Split(' ');
+
+            //"DELETE FROM myTable WHERE " + "id = 4"; ex/
+            //"DELETE FROM myTable WHERE " + "item_name = rubberdicks"; ex/
+
+            //int equalsCounter = 0;
+            //foreach (String x in pieces)
+            //    if (x == "=") equalsCounter += 1;
+
+            List<KVP<String, String>> actions = new List<KVP<String, String>>();
+
+            //if (equalsCounter == 1)
+            //{
+                for (int i = 0; i < pieces.Length; i++)
+                {
+                    if (pieces[i] == "=")
+                    {
+                        actions.Add(new KVP<String, String>(pieces[i - 1], pieces[i + 1]));
+                    }
+
+                }
+            //}
+
+            Deletify(actions);
+
+        }
+
+
 
 
         public static void Update(Boolean fetchNewRows)

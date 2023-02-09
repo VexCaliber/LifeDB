@@ -327,10 +327,12 @@ namespace LifeDB.Resources.Code
                 }
 
             }
-                
-                try
+                    
+            SQLiteCommand command;
+
+            try
                 {
-                    SQLiteCommand command;
+                    //SQLiteCommand command;
                     command = SqlDb.connection.CreateCommand();
                     command.CommandText = "DELETE FROM myTable WHERE " + ASSIGNED;
                     command.ExecuteNonQuery();
@@ -341,6 +343,7 @@ namespace LifeDB.Resources.Code
                     return false;
                 }
 
+                TableViewController.parseDelete(command.CommandText);
                 return true;
 
         }
