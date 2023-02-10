@@ -177,78 +177,75 @@ namespace LifeDB.Resources.Code
         public static void Deletify(List<KVP<String, String>> actions)
         {
 
-            int columns = 7;
-            //int activeRow = 1;
-            //var cells = table.RowGroups[0].Rows[activeRow].Cells.ToList();
+            /*
+             * WARNING: This is a mind fyuck...I'm not sure if i even comprehend it yet, but it should work?
+             */
 
-            foreach(TableRow row in table.RowGroups[0].Rows)
+            //int columns = 7;
+            //int activeRow = 1;
+            var headerCells = table.RowGroups[0].Rows[0].Cells;
+            Boolean skippedRow = false;
+
+            RowCycle:foreach(TableRow row in table.RowGroups[0].Rows)
             {
 
-                foreach (TableColumn column in table.Columns)
+                if(skippedRow == false) { skippedRow = true; continue; }
+
+                //foreach(TableCell header in table.RowGroups[0].Rows[1].Cells) //pretend im not here >.>
+                //int currentCell = 0;           
+
+                foreach (TableCell cell in row.Cells)
                 {
+                    
+                    //0,1,2,3,4,5,6
+                    //1,2,3,4,5,6,7
+                    
+                    //cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward)
+                    //headerCells[1].Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward)
 
-                    foreach (TableCell cell in row.Cells)
+                    //SET UP FOR MULTIPLE PAIRS, BUT NOT THE SYSTEM ITSELF YET...WILL CREATE ERRORS IN FUTURE
+                    foreach (KVP<String, String> pair in actions)
                     {
-
-                        foreach (KVP<String, String> pair in actions)
+                        foreach(TableCell headerCell in headerCells)
                         {
-                            //if(pair.GetKey == table.Columns.)
-                        }
+                            if(headerCell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward) == pair.GetKey())
+                            {
+                                if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward) == pair.GetValue()){
 
-                        //if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun() == )
+                                    foreach(TableCell target in row.Cells)
+                                    {
+                                        target.Blocks.Clear();
+                                    }
 
+                                    //continue RowCycle;
+
+                                }
+                            }
+                        } 
                     }
+
+
+                    //currentCell++;
+                       //if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun() == )
 
                 }
 
-            }
-
-            /*
-            SQLiteDataReader reader = SqlDb.SelectAll();
-
-            if (reader == null) throw new Exception("Failed to get data from table via Select All @TableViewController.Generate()");
-
-            var columns = reader.FieldCount;
-
-            List<String> values = new List<String>();
-
-            while (reader.Read()) //REVIEW ME!
-            {
-
-                //read the db for id's, compare against table id's
-                if((Int32)reader.GetInt64(0) != table.RowGroups[0].Rows[].Cells[i].Blocks.First())
+                //We're passing what to look for.  We must iterate on every cell, checking against the header value for the column, matching what would be deleted in sql.
+                // <- Map ->
+                // get the commands
+                // package the commands into a KVP, in a list
+                // pass the commands to deletify
+                // begin scanning rows
+                // skip the first (header) row (aka. columns/column names
+                // read a cell
+                // cycle through kvp actions list
+                // cycle through headers
+                // if the action key text matches the header 
                 
 
-                //lastCount = (Int32)DataReader.GetInt64(0);
-
-                //GenerateRow(values);
-
-                //values.Clear();
-
             }
-            //if !==, rowCollection.delete the fxck
-            //every match row back current row?
-
-
-
-            //find the deleted row
-            //delete it from the collection / the view
-            //adjust the row colors below to fit the even/odd background color alternation (cascade)
-            //rollback the current row (currentRow--)
-            //maybe update the DBCount
 
             
-            //So...I'm getting the wall of rejections from Indeed r/n and honestly...I'm so fxcking done...
-            //this is just gonna be an outline because fxck it
-
-            //find the deleted row
-            //delete it from the collection / the view
-            //adjust the row colors below to fit the even/odd background color alternation (cascade)
-            //rollback the current row (currentRow--)
-            //maybe update the DBCount
-            */
-
-
 
         }
 
