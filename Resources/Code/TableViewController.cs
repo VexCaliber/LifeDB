@@ -173,26 +173,89 @@ namespace LifeDB.Resources.Code
 
         }
 
-        
+        /*
+        public static void Regenerate()
+        {
+            List<TableRow> rows = new List<TableRow>();
+            Boolean skippedRow = false;
+            foreach(TableRow row in table.RowGroups[0].Rows)
+            {
+                if (skippedRow == false) { skippedRow = true; continue; }
+
+                rows.Add(row);
+
+            }
+
+            foreach (TableRow row in rows)
+            {
+                table.RowGroups[0].Rows.Remove(row);
+            }
+            
+
+            SQLiteDataReader reader = SqlDb.SelectAll();
+
+            if (reader == null) throw new Exception("Failed to get data from table via Select All @TableViewController.Generate()");
+
+            var columns = reader.FieldCount;
+
+            List<String> values = new List<String>();
+
+            while (reader.Read()) //REVIEW ME!
+            {
+
+                for (int i = 0; i < columns; i++)
+                {
+
+                    if (i == 4 | i == 5)
+                    {
+                        ///We're getting a number YYYY/MM/DD
+                        ///Take the value and build a date  :: In 1/12/2020, becomes 2020/1/12; Out value -> String -> Date -> Add -> Table
+                        //2020112  20200112  20112  200112
+                        //0123456
+                        var preform = reader.GetValue(i);
+                        var d = preform.ToString();
+
+                        values.Add(DateNormalizer(d));
+                    }
+                    else
+                        values.Add(reader.GetValue(i).ToString());
+
+                }
+
+                GenerateRow(values);
+
+                values.Clear();
+
+            }
+
+
+        }
+        */
+
         public static void Deletify(List<KVP<String, String>> actions)
         {
+
+            //Regenerate();
 
             /*
              * WARNING: This is a mind fyuck...I'm not sure if i even comprehend it yet, but it should work?
              */
-
+            /*
             //int columns = 7;
             //int activeRow = 1;
             var headerCells = table.RowGroups[0].Rows[0].Cells;
             Boolean skippedRow = false;
+            List<TableRow> forDeletion = new List<TableRow>();
 
-            RowCycle:foreach(TableRow row in table.RowGroups[0].Rows)
+            foreach(TableRow row in table.RowGroups[0].Rows)
             {
 
                 if(skippedRow == false) { skippedRow = true; continue; }
 
                 //foreach(TableCell header in table.RowGroups[0].Rows[1].Cells) //pretend im not here >.>
-                //int currentCell = 0;           
+                //int currentCell = 0;
+                
+                
 
                 foreach (TableCell cell in row.Cells)
                 {
@@ -212,12 +275,7 @@ namespace LifeDB.Resources.Code
                             {
                                 if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward) == pair.GetValue()){
 
-                                    foreach(TableCell target in row.Cells)
-                                    {
-                                        target.Blocks.Clear();
-                                    }
-
-                                    //continue RowCycle;
+                                    forDeletion.Add(row);                         
 
                                 }
                             }
@@ -226,7 +284,7 @@ namespace LifeDB.Resources.Code
 
 
                     //currentCell++;
-                       //if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun() == )
+                    //if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun() == )
 
                 }
 
@@ -245,7 +303,23 @@ namespace LifeDB.Resources.Code
 
             }
 
+
+
+            foreach(TableRow row in forDeletion)
+            {
+                table.RowGroups[0].Rows.Remove(row);
+                currentRow--;
+                table.RowGroups[0].Rows.RemoveAt(table.RowGroups[0].Rows.Count);
+                
+            }
+            SqlDb.DBCount();
+            Update(false);
             
+            //table.RowGroups[0].Rows.RemoveAt(currentRow - 1);
+            //currentRow--;
+
+            //Update(true);
+            */
 
         }
 
@@ -284,8 +358,6 @@ namespace LifeDB.Resources.Code
             Deletify(actions);
 
         }
-
-
 
 
         public static void Update(Boolean fetchNewRows)
