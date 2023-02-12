@@ -237,12 +237,6 @@ namespace LifeDB.Resources.Code
 
             //Regenerate();
 
-            /*
-             * WARNING: This is a mind fyuck...I'm not sure if i even comprehend it yet, but it should work?
-             */
-            /*
-            //int columns = 7;
-            //int activeRow = 1;
             var headerCells = table.RowGroups[0].Rows[0].Cells;
             Boolean skippedRow = false;
             List<TableRow> forDeletion = new List<TableRow>();
@@ -252,28 +246,17 @@ namespace LifeDB.Resources.Code
 
                 if(skippedRow == false) { skippedRow = true; continue; }
 
-                //foreach(TableCell header in table.RowGroups[0].Rows[1].Cells) //pretend im not here >.>
-                //int currentCell = 0;
-                
-                
-
                 foreach (TableCell cell in row.Cells)
-                {
-                    
-                    //0,1,2,3,4,5,6
-                    //1,2,3,4,5,6,7
-                    
-                    //cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward)
-                    //headerCells[1].Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward)
-
+                {   
+                  
                     //SET UP FOR MULTIPLE PAIRS, BUT NOT THE SYSTEM ITSELF YET...WILL CREATE ERRORS IN FUTURE
                     foreach (KVP<String, String> pair in actions)
                     {
                         foreach(TableCell headerCell in headerCells)
                         {
-                            if(headerCell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward) == pair.GetKey())
+                            if(headerCell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward).ToString() == pair.GetKey())
                             {
-                                if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward) == pair.GetValue()){
+                                if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward).ToString() == pair.GetValue()){
 
                                     forDeletion.Add(row);                         
 
@@ -281,45 +264,40 @@ namespace LifeDB.Resources.Code
                             }
                         } 
                     }
-
-
-                    //currentCell++;
-                    //if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun() == )
-
                 }
-
-                //We're passing what to look for.  We must iterate on every cell, checking against the header value for the column, matching what would be deleted in sql.
-                // <- Map ->
-                // get the commands
-                // package the commands into a KVP, in a list
-                // pass the commands to deletify
-                // begin scanning rows
-                // skip the first (header) row (aka. columns/column names
-                // read a cell
-                // cycle through kvp actions list
-                // cycle through headers
-                // if the action key text matches the header 
-                
-
             }
 
-
+            /*
+            * Scan the Rows
+            * Skip the Header Row
+            * Scan the Cells
+            * Per each action kvp
+            * Scan the Header Cells
+            * If the header text val equals the action key -> test value
+            * If the cell value equals the action value -> add row to deletion list
+            * Cycle through the rows to delete and remove them individually
+            * -
+            * Rollback last written row eg. currentRow
+            */
 
             foreach(TableRow row in forDeletion)
             {
-                table.RowGroups[0].Rows.Remove(row);
-                currentRow--;
-                table.RowGroups[0].Rows.RemoveAt(table.RowGroups[0].Rows.Count);
-                
+                table.RowGroups[0].Rows.Remove(row); //it will shift "up" or "left", the rows to fill the void, in the process,
+                table.RowGroups[0].Rows.RemoveAt(currentRow); //it doesn't update the visual...so we do need to remove the last written row...?               
+                --currentRow;
+                --currentRow;
+                ///--currentRow;
+                Update(false);//and refresh
+
             }
-            SqlDb.DBCount();
-            Update(false);
+            //SqlDb.DBCount();
+            //Update(false);
             
             //table.RowGroups[0].Rows.RemoveAt(currentRow - 1);
             //currentRow--;
 
             //Update(true);
-            */
+            
 
         }
 
@@ -361,14 +339,7 @@ namespace LifeDB.Resources.Code
 
 
         public static void Update(Boolean fetchNewRows)
-        {
-            
-            //SqlDb.DBCount();
-
-            //if(SqlDb.lastCount < TableViewController.currentRow) 
-            //{ 
-            //    TableViewController.Deletify();
-            //}
+        {   
             
             if(fetchNewRows == true) {
 
@@ -381,8 +352,6 @@ namespace LifeDB.Resources.Code
             }
             
             Agitate(SqlDb.GetVisibleIdRange());
-
-            
 
         }
 
@@ -465,6 +434,8 @@ namespace LifeDB.Resources.Code
             tr.FontFamily = new FontFamily("consolas");
             tr.FontSize = 12;
 
+            MessageHandler.userConsole.Text += "row" + "; ";
+
             return tr;
 
         }
@@ -486,6 +457,8 @@ namespace LifeDB.Resources.Code
             tr.Background = Brushes.WhiteSmoke;
             tr.FontFamily = new FontFamily("consolas"); //THESE CAUSE AMBIG. ERRORS TRACK THE USINGS IN IMPORTS...they just decided to throw randomly O.o
             tr.FontSize = 12;
+
+            MessageHandler.userConsole.Text += "row" + "; ";
 
             return tr;
 

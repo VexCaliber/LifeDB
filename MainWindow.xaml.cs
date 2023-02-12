@@ -161,7 +161,7 @@ namespace LifeDB
             }
 
             REMOVE_SUBMIT.Background = System.Windows.Media.Brushes.LightGreen;
-            TableViewController.Update(true);
+            //TableViewController.Update(true);
 
         }
     }
