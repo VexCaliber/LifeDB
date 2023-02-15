@@ -232,6 +232,7 @@ namespace LifeDB.Resources.Code
         }
         */
 
+        //PENDING OUTSIDE REVIEW -- My brain just refuses to wanna fix this one...idk, but this'll have to wait a little...
         public static void Deletify(List<KVP<String, String>> actions)
         {
 
@@ -285,7 +286,7 @@ namespace LifeDB.Resources.Code
                 table.RowGroups[0].Rows.Remove(row); //it will shift "up" or "left", the rows to fill the void, in the process,
                 table.RowGroups[0].Rows.RemoveAt(currentRow); //it doesn't update the visual...so we do need to remove the last written row...?               
                 --currentRow;
-                --currentRow;
+                --currentRow; //seems to have little to no effect, but currentRow is our critical pacemaker so idek what the hell is the deal here...
                 ///--currentRow;
                 Update(false);//and refresh
 
@@ -434,7 +435,7 @@ namespace LifeDB.Resources.Code
             tr.FontFamily = new FontFamily("consolas");
             tr.FontSize = 12;
 
-            MessageHandler.userConsole.Text += "row" + "; ";
+            //ConsoleHandler.userConsole.Text += "row" + "; ";
 
             return tr;
 
@@ -458,7 +459,7 @@ namespace LifeDB.Resources.Code
             tr.FontFamily = new FontFamily("consolas"); //THESE CAUSE AMBIG. ERRORS TRACK THE USINGS IN IMPORTS...they just decided to throw randomly O.o
             tr.FontSize = 12;
 
-            MessageHandler.userConsole.Text += "row" + "; ";
+            //ConsoleHandler.userConsole.Text += "row" + "; ";
 
             return tr;
 

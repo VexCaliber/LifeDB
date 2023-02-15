@@ -23,7 +23,7 @@ namespace LifeDB
 
             InitializeComponent();
 
-            MessageHandler.init(USER_CONSOLE);
+            ConsoleHandler.init(USER_CONSOLE);
 
             SqlDb.Connect();
 

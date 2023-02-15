@@ -35,7 +35,7 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Column="0" Grid.Row="0" Background="Gold"/>
-        <Border Grid.Column="1" Grid.Row="0" Background="Gold"/>
+        <Border Grid.Column="1" Grid.Row="0" BorderBrush="Black"  BorderThickness="2"/>
         <Border Grid.Column="2" Grid.Row="0" Background="Gold"/>
         <Border Grid.Column="3" Grid.Row="0" Background="Gold"/>
 
@@ -124,9 +124,10 @@
                    FontFamily="Modern No. 20"
                    FontWeight="Bold"
                    FontStyle="Italic" 
-                   FontSize="20"
-                   Background="Gold" 
-                   BorderBrush="Gold" 
+                   FontSize="18"
+                   Background="Yellow"
+                   Margin="2,2,2,2"
+
                    Content="Stock "/>
 
         <Button Grid.Column="2"
