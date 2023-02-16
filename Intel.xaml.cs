@@ -25,27 +25,45 @@ namespace LifeDB
             InitializeComponent();
         }
 
+        //-------------------------------------//
+
+        private void MoveWindow(object sender, MouseButtonEventArgs e)
+        {
+            
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                MainWindow.GetWindow(this).DragMove();
+                e.Handled = true;
+            }
+
+        }
+
         private void MinWindow(object sender, RoutedEventArgs e)
         {
-            //this.WindowState = WindowState.Minimized; 
+            
+            MainWindow.GetWindow(this).WindowState = WindowState.Minimized;
+
         }
 
         private void MaxWindow(object sender, RoutedEventArgs e)
         {
 
-            //if (this.WindowState == WindowState.Maximized)
-           // {
-            //    this.WindowState = WindowState.Normal;
-            //}
-            //else
-            //{
-            //    this.WindowState = WindowState.Maximized;
-            //}
+            if (MainWindow.GetWindow(this).WindowState == WindowState.Maximized)
+            {
+                MainWindow.GetWindow(this).WindowState = WindowState.Normal;
+            }
+            else
+            {
+                MainWindow.GetWindow(this).WindowState = WindowState.Maximized;
+            }
+
         }
 
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
-            //Close();
+
+            MainWindow.GetWindow(this).Close(); 
+
         }
 
         private void MoveWindow(object sender, RoutedEventArgs e)
@@ -53,7 +71,9 @@ namespace LifeDB
 
         }
 
+        private void FixedPage_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
+        {
 
-
+        }
     }
 }

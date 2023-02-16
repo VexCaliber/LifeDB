@@ -147,7 +147,7 @@
 
 
         <!--DOC!-->
-        <Grid Grid.Row="1" Grid.ColumnSpan="4" Margin="5,5,5,5" Background="silver">
+        <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="5,5,5,5" Background="silver">
         
             <FlowDocumentPageViewer>
 
@@ -166,7 +166,21 @@
         </Grid>    
         <!--/DOC!-->
 
+        <StackPanel Grid.Row="1" Grid.Column="3" Margin="5,5,5,5" Background="silver" CanVerticallyScroll="True">
 
+            <Label FontFamily="Consolas" 
+                   FontSize="20" 
+                   FontWeight="ExtraBlack"
+                   Content="SUMMARY"/>
+
+            <Label FontFamily="Consolas" 
+                   FontSize="10" 
+                   FontWeight="ExtraBlack"
+                   Content="SUMMARY"/>
+
+             <!--I'm not exactly sure how I wanna do this, so we'll pick up here later...-->
+
+        </StackPanel>
 
 
     </Grid>

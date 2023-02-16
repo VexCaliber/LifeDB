@@ -48,7 +48,7 @@ namespace LifeDB
             }
         }
 
-        private void MinWindow(object sender, RoutedEventArgs e)
+        protected void MinWindow(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
@@ -69,11 +69,6 @@ namespace LifeDB
         private void CloseWindow(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void MoveWindow(object sender, RoutedEventArgs e)
-        {
-
         }
 
 
