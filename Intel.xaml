@@ -165,23 +165,32 @@
         
         </Grid>    
         <!--/DOC!-->
+        
+        <!--SUMMARY-->
+        <Label Grid.Row="1" 
+               Grid.Column="3" 
+               Margin="5,5,5,395"
+               Background="Silver"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               FontFamily="Consolas"
+               FontSize="12"
+               FontWeight="Bold"
+               BorderBrush="Black"
+               BorderThickness="2" 
+               Content="SUMMARY"/>
 
-        <StackPanel Grid.Row="1" Grid.Column="3" Margin="5,5,5,5" Background="silver" CanVerticallyScroll="True">
+        <StackPanel Grid.Row="1" Grid.Column="3" Margin="5,30,5,5" Background="silver" CanVerticallyScroll="True" x:Name="SummaryPanel">
 
             <Label FontFamily="Consolas" 
-                   FontSize="20" 
-                   FontWeight="ExtraBlack"
-                   Content="SUMMARY"/>
-
-            <Label FontFamily="Consolas" 
-                   FontSize="10" 
-                   FontWeight="ExtraBlack"
-                   Content="SUMMARY"/>
+                   FontSize="12" 
+                   FontWeight="Bold"
+                   Content="test"/>
 
              <!--I'm not exactly sure how I wanna do this, so we'll pick up here later...-->
 
         </StackPanel>
-
+        <!--/SUMMARY-->
 
     </Grid>
 
