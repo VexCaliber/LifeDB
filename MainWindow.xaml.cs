@@ -1,5 +1,6 @@
 ﻿using LifeDB.Resources.Code;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using System.Xml.XPath;
 using static LifeDB.Resources.Code.SqlDb;
 
@@ -157,6 +159,21 @@ namespace LifeDB
 
             REMOVE_SUBMIT.Background = System.Windows.Media.Brushes.LightGreen;
             //TableViewController.Update(true);
+
+        }
+
+        private void ToIntel(object sender, RoutedEventArgs e)
+        {
+
+            //NavigationWindow window = new NavigationWindow();
+            //window.Source = new Uri("\\Intel.xaml", UriKind.Relative);
+            //window.Show();
+
+            //NavigationWindow.GetWindow(this).Content = new Uri("\\Intel.xaml", UriKind.Relative).;
+
+            //NavigationService.Navigate(new Uri("/OtherViewPage.xaml", UriKind.Relative));
+
+
 
         }
     }

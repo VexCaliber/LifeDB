@@ -138,49 +138,53 @@
                 FontStyle="Italic" 
                 FontSize="18"
                 Background="Yellow"
-                Margin="2,2,2,2"
-                 
-                
+                BorderBrush="Yellow"
+                Margin="2,2,2,2"          
                 Content="Intel "/>
         <!--/TitleBar-->
 
 
 
-        <!--DOC!-->
-        <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="5,5,5,5" Background="silver">
-        
-            <FlowDocumentPageViewer>
+        <!--DATA-->
+        <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="5,5,5,5" >
 
-                <FlowDocument>
+            <Label 
+               
+               Margin="0,0,0,390"
+               Background="Beige"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               FontFamily="Consolas"
+               FontSize="10"
+               FontWeight="Bold"
+               BorderBrush="Black"
+               BorderThickness="2" 
+               Content="Data"/>
 
-                    <Paragraph>
-                        <Run>
-                            asdsad
-                        </Run>
-                    </Paragraph>
+            <StackPanel Name="DATAPANEL" Margin="0,26,0,0" Background="Silver" CanVerticallyScroll="True">
+
                 
-                </FlowDocument>
             
-            </FlowDocumentPageViewer>
+            </StackPanel>
         
         </Grid>    
-        <!--/DOC!-->
+        <!--/DATA-->
         
         <!--SUMMARY-->
         <Label Grid.Row="1" 
                Grid.Column="3" 
                Margin="5,5,5,395"
-               Background="Silver"
+               Background="Beige"
                HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center"
                FontFamily="Consolas"
-               FontSize="12"
+               FontSize="10"
                FontWeight="Bold"
                BorderBrush="Black"
                BorderThickness="2" 
                Content="SUMMARY"/>
 
-        <StackPanel Grid.Row="1" Grid.Column="3" Margin="5,30,5,5" Background="silver" CanVerticallyScroll="True" x:Name="SummaryPanel">
+        <StackPanel Name="SUMMARYPANEL" Grid.Row="1" Grid.Column="3" Margin="5,31,5,5" Background="silver" CanVerticallyScroll="True">
 
             <Label FontFamily="Consolas" 
                    FontSize="12" 

@@ -126,7 +126,8 @@
                    FontStyle="Italic" 
                    FontSize="18"
                    Background="Yellow"
-                   Margin="2,2,2,2"
+                   BorderBrush="Yellow" 
+                   Margin="2,2,2,2" 
 
                    Content="Stock "/>
 
@@ -141,6 +142,7 @@
                 FontSize="20"
                 Background="Gold" 
                 BorderBrush="Gold"
+                Click="ToIntel"
                 Content="Intel "/>
         <!--/TitleBar-->
 
