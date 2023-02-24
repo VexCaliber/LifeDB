@@ -1,0 +1,27 @@
+﻿Alrighty, so I wanna throw a couple things out here
+
+Had to take a few days to deal with taxes and decompress.  That and screen time is screwing with my head & eyes...
+
+This will probably just serve as the basis for a new version.  Whilst I wanted to do the loose coupling, I went the brute force route and this project doesn't live up to what I 
+wanted really.  Not exactly extensible.  
+
+Still waiting on the look and fix for deletions...I honestly don't wanna touch it or look at it at this point.  Been quite busy lately.
+
+I'm gonna still try to get this done and get a second version going that'll achieve what I wanted here, 
+but I do have to throw it out there...I may have to throw dev/coding away to get a normal job again.
+
+With cash drying up and these self righteous "quants" refusing to hire me, I may end up having to walk away from things.
+
+It's great how they expect multiple public projects, and "proofs" whilst you're not getting paid for it, 
+and slowly bankrupting yourself for the "opportunity" to maybe be considered one day...assuming you don't go homeless or starve first, 
+then oh no...they couldn't possibly consider you.
+
+It's such scummy b/s.  Like...do they realize things cost money??  I know they have coffee spilling out from golden horse dxcks in big tech, 
+but do they know that most people only make 30-50k a year?  Do they know that being a glorified text editor costs time and money...because existence has a price?
+
+Idk, but honestly I may go into the depths and just start building lists of all the software they offer and make my own.  I mean, if they won't hire me, then I guess
+I'll just have to generate better shxt at the tenth the price and do direct customer service...beat em' to bankruptcy.
+
+Meh...whatever...
+
+https://youtu.be/zR_KZ4bBglM

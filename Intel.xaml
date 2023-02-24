@@ -159,9 +159,9 @@
                FontWeight="Bold"
                BorderBrush="Black"
                BorderThickness="2" 
-               Content="Data"/>
+               Content="SNIPPETS"/>
 
-            <StackPanel Name="DATAPANEL" Margin="0,26,0,0" Background="Silver" CanVerticallyScroll="True">
+            <StackPanel Name="SNIPPETPANEL" Margin="0,26,0,0" Background="Silver" CanVerticallyScroll="True">
 
                 
             

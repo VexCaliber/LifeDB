@@ -406,7 +406,7 @@ namespace LifeDB.Resources.Code
         }
 
 
-        //Reserved for testing & TableViewController
+        //Reserved for internal use
         public static SQLiteDataReader SelectAll()
         {
            
