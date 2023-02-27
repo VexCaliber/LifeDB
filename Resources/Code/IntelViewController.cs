@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
@@ -61,6 +62,7 @@ namespace LifeDB.Resources.Code
         public static void RunStats()
         {
 
+            //if the resultSet closes permanently, then re-engineer this to go line by line, passing each entry individually to each method.
             getData();
 
             if (data == null) return;
@@ -68,6 +70,8 @@ namespace LifeDB.Resources.Code
             ScanTotalEntries();
             ScanNames();
             ScanEaches();
+            ScanDates();
+            ScanLimits();
 
         }
 
@@ -147,30 +151,160 @@ namespace LifeDB.Resources.Code
 
         }
 
-        //shaky
+        //modify to offer order of which eaches to use, mindful of duplicates, based on earliest expiring to latest expiring...
         private static void ScanDates()
         {
-
-            Func<String, String> normalize = (i) => { return TableViewController.DateNormalizer(i); };
-
-            String xDate;
-            String yDate;
+            int expiredEntries     = 0;
+            int totalExpiredEaches = 0;
 
             while (data.Read())
             {
-                xDate = normalize(data.GetValue(4).ToString()); 
-                yDate = normalize(data.GetValue(5).ToString());
 
-                if (xDate.Length != yDate.Length) continue; //catch-all for non-comparables - remember, xDate will always be defaulted to current date whilst yDate will default to -1
+                if (ExpiresWithin30(data.GetString(5)))
+                {
+                    WriteToSnippets("At id: " + data.GetValue(0).ToString() + ", Item: " + data.GetString(1) + ", representing: " + data.GetValue(2).ToString() + " eaches is going to expire withing 30 days!");
+                    WriteToSummary("id: " + data.GetValue(0).ToString() + "contains eaches nearing expiration");
+                }
+                
+                if (HasExpired(data.GetString(5)))
+                {
+                    WriteToSnippets("At id: " + data.GetValue(0).ToString() + ", Item: " + data.GetString(1) + ", representing: " + data.GetValue(2).ToString() + " eaches has expired!");
+                    
+                    expiredEntries++;
+                    
+                    try
+                    {
+                        totalExpiredEaches += (Int32)data.GetValue(2);
 
-                //kk, didn't do much today, but ksp2 came out officially early access so...considering I got turned down by yet another tech job I'm more than qual for...
-                //I'ma go play rocket man ^.^ for the rest of the day.
+                    }
+                    catch(Exception ex)
+                    {
+                        //ignore
+                    }
 
-                //var preform = reader.GetValue(i);
-                //var d = preform.ToString();
-                //values.Add(DateNormalizer(d));
+                }
+                
 
             }
+
+            WriteToSummary(expiredEntries + " expired entries");
+            WriteToSummary(totalExpiredEaches + " expired eaches");
+
+        }
+
+        //maybe modify to account for the duplicates
+        //take advantage of bigbox api's (if available) to pull prices (with links) for resupply when under limit?  possibly dev a light scraper for this if needed.
+        //if over limit, maybe scrape prices from online marketplaces for selling prompts
+        private static void ScanLimits()
+        {
+
+            int over = 0, at = 0, under = 0;
+
+            while (data.Read())
+            {
+
+                if ((Int32)data.GetValue(2) > (Int32)data.GetValue(6))
+                {
+                    int x = (Int32)data.GetValue(2) - (Int32)data.GetValue(6);
+                    WriteToSnippets("id: " + data.GetValue(0).ToString() + " is over limit by " + x + " eaches!");
+                    over++;
+                }
+
+                //Meh...I'm sure the following 2 will be more of a nuisance...
+                if ((Int32)data.GetValue(2) == (Int32)data.GetValue(6))
+                {
+                    //WriteToSnippets("id: " + data.GetValue(0).ToString() + " is at the your set limit.");
+                    at++;
+                }
+
+                if ((Int32)data.GetValue(2) < (Int32)data.GetValue(6))
+                {
+                    int x = (Int32)data.GetValue(6) - (Int32)data.GetValue(2);
+                    //WriteToSnippets("id: " + data.GetValue(0).ToString() + " is under the your set limit by " + x + " eaches!");
+                    under++;
+                }
+
+            }
+
+            WriteToSummary(over  + " Entries over eaches limit");
+            WriteToSummary(at    + " Entries at eaches limit");
+            WriteToSummary(under + " Entries under eaches limit");
+
+        }
+
+        //==========Helpers==========//
+
+        private static int Converted(String x) { return Int32.Parse(x); }
+        
+        private static String Converted(Int32 x) { return x.ToString(); }    
+        
+        private static Boolean ExpiresWithin30(String NormalizedExpiryDate)
+        {
+
+            if (NormalizedExpiryDate.Equals("-1")) return false;
+
+            try
+            {
+                           
+                //Dates are "day/month/year"
+                //Split Index 0    1    2
+                String[] split = NormalizedExpiryDate.Split("/");
+
+                DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+               
+                DateOnly expirationDate = new DateOnly(day: Converted(split[0]), month: Converted(split[1]), year: Converted(split[2]));
+            
+                //Oh I hope this works...otherwise it's gonna get real autsy up in here...O.O
+                if(currentDate.AddDays(30) >= expirationDate)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch(Exception e)
+            {
+                return false;
+            }
+
+
+        }
+
+        private static Boolean HasExpired(String NormalizedExpiryDate)
+        {
+
+            if (NormalizedExpiryDate.Equals("-1")) return false;
+
+            try
+            {
+
+                //Dates are "day/month/year"
+                //Split Index 0    1    2
+                String[] split = NormalizedExpiryDate.Split("/");
+
+                DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now);
+
+                DateOnly expirationDate = new DateOnly(day: Converted(split[0]), month: Converted(split[1]), year: Converted(split[2]));
+
+                //Oh I hope this works...otherwise it's gonna get real autsy up in here...O.O
+                if (currentDate > expirationDate)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
 
         }
 
