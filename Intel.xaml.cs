@@ -25,6 +25,7 @@ namespace LifeDB
         {
             InitializeComponent();
             IntelViewController.Init(SNIPPETPANEL, SUMMARYPANEL);
+            IntelViewController.RunStats();
         }
 
         //-------------------------------------//

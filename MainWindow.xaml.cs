@@ -84,6 +84,13 @@ namespace LifeDB
 
         }
 
+        private void ToStock(object sender, RoutedEventArgs e)
+        {
+
+            MAIN.Content = new Stock();
+
+        }
+
 
         //-----------------------------------------------------------------//
 
