@@ -343,7 +343,7 @@ namespace LifeDB.Resources.Code
                     return false;
                 }
 
-                TableViewController.parseDelete(command.CommandText);
+                StockViewController.parseDelete(command.CommandText);
                 return true;
 
         }
@@ -477,7 +477,7 @@ namespace LifeDB.Resources.Code
             {
                 SQLiteCommand command;
                 command = SqlDb.connection.CreateCommand();
-                command.CommandText = "SELECT * from myTable WHERE id BETWEEN " + 1 + " AND " + TableViewController.currentRow; //current row is last known written row.
+                command.CommandText = "SELECT * from myTable WHERE id BETWEEN " + 1 + " AND " + StockViewController.currentRow; //current row is last known written row.
                 SQLiteDataReader DataReader = command.ExecuteReader();
                 return DataReader;
             }

@@ -22,6 +22,10 @@ namespace LifeDB
 
         public MainWindow()
         {
+            
+            InitializeComponent();
+
+            /*
 
             InitializeComponent();
 
@@ -34,7 +38,7 @@ namespace LifeDB
             //| id | item_name | item_quantity | item_category | added | expires | limit |
     
             TableViewController.Generate();
-            
+            */
 
         }
 
@@ -73,10 +77,17 @@ namespace LifeDB
             Close();
         }
 
+        private void ToIntel(object sender, RoutedEventArgs e)
+        {
+
+            MAIN.Content = new Intel();
+
+        }
+
 
         //-----------------------------------------------------------------//
 
-
+        /*
         private void ADD_SUBMIT_EXECUTE(object sender, RoutedEventArgs e)
         {
             try
@@ -169,6 +180,25 @@ namespace LifeDB
             //window.Source = new Uri("\\Intel.xaml", UriKind.Relative);
             //window.Show();
 
+            //NavigationService.GetNavigationService(this).NavigateTo("Intel.xaml");
+
+            // Get a reference to the NavigationService that navigated to this Page
+            //NavigationService.GetNavigationService(this).Source = new Uri("\\Intel.xaml", UriKind.Relative); //failed
+
+            //NavigationService.GetNavigationService(this).Navigate(new Uri("Intel.xaml", UriKind.Relative));
+
+            //Window.GetWindow(this).Content = new Uri("Intel.xaml", UriKind.Relative);
+
+            //Page intel = new Page(new Uri("Intel.xaml", UriKind.Relative));
+
+            //NavigationService.GetNavigationService(this).Source = new Uri("\\Intel.xaml", UriKind.Relative);
+
+            //MainWindow m = new MainWindow();
+            //m.Show();
+
+            
+
+
             //NavigationWindow.GetWindow(this).Content = new Uri("\\Intel.xaml", UriKind.Relative).;
 
             //NavigationService.Navigate(new Uri("/OtherViewPage.xaml", UriKind.Relative));
@@ -176,6 +206,9 @@ namespace LifeDB
 
 
         }
+        */
+
+
     }
 
 

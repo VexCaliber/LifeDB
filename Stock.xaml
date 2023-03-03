@@ -1,0 +1,464 @@
+﻿<Page x:Class="LifeDB.Stock"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LifeDB"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Stock"
+      Name="_Stock"
+      >
+
+
+    <Grid>
+
+        <Grid Grid.Row="1" Grid.ColumnSpan="4">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="124"/>
+                    <!--<RowDefinition Height="100"/>-->
+                </Grid.RowDefinitions>
+
+
+                <!--ZE_TABLE!-->
+                <Grid>
+
+                    <FlowDocumentReader ViewingMode="Scroll">
+
+                        <FlowDocument>
+
+                            <Table x:Name="myTable">
+
+                                <Table.Columns>
+                                    <TableColumn/>
+                                    <TableColumn/>
+                                    <TableColumn/>
+                                    <TableColumn/>
+                                    <TableColumn/>
+                                    <TableColumn/>
+                                    <TableColumn/>
+                                </Table.Columns>
+
+                                <TableRowGroup>
+
+                                    <!--Note: We need a template for the rows...individual names overlap
+                                the template also will need to cycle between white and whitesmoke backgrounds
+                                Don't know how to acheive this yet, let alone how to write to it, but we'll
+                                need a row writer to go one by one, and we'll need to update live, so some handle on the table
+                                GOD...this is a bit much...i figured it'd be quicker
+                                ::Nothing like torching days working on layout and looks XD -->
+
+                                    <TableRow 
+                                    x:Name="TableHeaderRow"
+                                    Background="Yellow"
+                                    FontFamily="consolas"
+                                    FontSize="12">
+
+                                        <TableCell TextAlignment="Center">
+                                            <Paragraph>id</Paragraph>
+                                        </TableCell>
+
+                                        <TableCell TextAlignment="Center">
+                                            <Paragraph>item_name</Paragraph>
+                                        </TableCell>
+
+                                        <TableCell TextAlignment="Center">
+                                            <Paragraph>item_quantity</Paragraph>
+                                        </TableCell>
+
+                                        <TableCell TextAlignment="Center">
+                                            <Paragraph>item_category</Paragraph>
+                                        </TableCell>
+
+                                        <TableCell TextAlignment="Center">
+                                            <Paragraph>added</Paragraph>
+                                        </TableCell>
+
+                                        <TableCell TextAlignment="Center">
+                                            <Paragraph>expires</Paragraph>
+                                        </TableCell>
+
+                                        <TableCell TextAlignment="Center">
+                                            <Paragraph>limit</Paragraph>
+                                        </TableCell>
+
+                                    </TableRow>
+                                    <!--
+                                <TableRow 
+                                    Name="Row0"
+                                    Background="White"
+                                    FontFamily="consolas"
+                                    FontSize="12">
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph>1</Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph>.223 #62g</Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph>4000</Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph>ammunition</Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph>1/1/23</Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph>1/1/27</Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph>10000</Paragraph>
+                                    </TableCell>
+
+                                </TableRow>
+
+                                <TableRow 
+                                    Name="Row1"
+                                    Background="WhiteSmoke"
+                                    FontFamily="consolas"
+                                    FontSize="12">
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                </TableRow>
+
+                                <TableRow 
+                                    Name="Row2"
+                                    Background="White"
+                                    FontFamily="consolas"
+                                    FontSize="12">
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph></Paragraph>
+                                    </TableCell>
+
+                                </TableRow>
+
+                                <TableRow 
+                                    x:Name="Row3"
+                                    Background="WhiteSmoke"
+                                    FontFamily="consolas"
+                                    FontSize="12">
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph Name="Cell0"></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph Name="Cell1"></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph Name="Cell2"></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph Name="Cell3"></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph Name="Cell4"></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph Name="Cell5"></Paragraph>
+                                    </TableCell>
+
+                                    <TableCell TextAlignment="Center">
+                                        <Paragraph Name="Cell6"></Paragraph>
+                                    </TableCell>
+
+                                </TableRow>
+
+                                -->
+
+                                </TableRowGroup>
+
+                            </Table>
+
+                        </FlowDocument>
+
+                    </FlowDocumentReader>
+
+                </Grid>
+                <!--/ZE_TABLE!-->
+
+
+                <TabControl Grid.Row="1" Height="124" SelectedIndex="0" VerticalContentAlignment="Center">
+
+                    <TabItem Header="Add">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Label x:Name="ADD_ID" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="id"/>
+                            <Label x:Name="ADD_NAME" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_name"/>
+                            <Label x:Name="ADD_QUANT" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_quantity"/>
+                            <Label x:Name="ADD_CAT" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_category"/>
+                            <Label x:Name="ADD_ADDED" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="added"/>
+                            <Label x:Name="ADD_EXPIRES" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="expires"/>
+                            <Label x:Name="ADD_LIMIT" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="limit"/>
+
+                            <TextBox x:Name="ADD_ID_VALUE" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="ADD_NAME_VALUE" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="ADD_QUANT_VALUE" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="ADD_CAT_VALUE" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="ADD_ADDED_VALUE" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="ADD_EXPIRES_VALUE" Grid.Row="2" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="ADD_LIMIT_VALUE" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+
+                            <Button x:Name="ADD_SUBMIT" Click="ADD_SUBMIT_EXECUTE" Grid.Row="4" Grid.Column="3" BorderBrush="Black" BorderThickness="1" FontFamily="consolas" FontSize="14" Content="Submit"/>
+
+                        </Grid>
+
+                    </TabItem>
+
+                    <TabItem Header="Edit">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Label x:Name="EDIT_ID" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="id"/>
+                            <Label x:Name="EDIT_NAME" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_name"/>
+                            <Label x:Name="EDIT_QUANT" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_quantity"/>
+                            <Label x:Name="EDIT_CAT" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="item_category"/>
+                            <Label x:Name="EDIT_ADDED" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="added"/>
+                            <Label x:Name="EDIT_EXPIRES" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="expires"/>
+                            <Label x:Name="EDIT_LIMIT" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Padding="-10" FontSize="14" FontFamily="consolas" Content="limit"/>
+
+                            <TextBox x:Name="EDIT_ID_VALUE" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="EDIT_NAME_VALUE" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="EDIT_QUANT_VALUE" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="EDIT_CAT_VALUE" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="EDIT_ADDED_VALUE" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="EDIT_EXPIRES_VALUE" Grid.Row="2" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+                            <TextBox x:Name="EDIT_LIMIT_VALUE" Grid.Row="2" Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="14" FontFamily="consolas" />
+
+                            <Button x:Name="EDIT_SUBMIT" Click="EDIT_SUBMIT_EXECUTE" Grid.Row="4" Grid.Column="3" BorderBrush="Black" BorderThickness="1" FontFamily="consolas" FontSize="14" Content="Submit"/>
+
+                        </Grid>
+
+                    </TabItem>
+
+                    <TabItem Header="Remove">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="1" Grid.Row="3" Text="Where" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontFamily="consolas"/>
+                            <TextBlock Grid.Column="3" Grid.Row="3" Text="equals" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" FontFamily="consolas"/>
+
+
+                            <ComboBox x:Name="REMOVE_SELECTION" Grid.Column="2" Grid.Row="3" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" FontWeight="Bold" FontFamily="consolas">
+
+                                <ComboBoxItem Content="id"              FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                                <ComboBoxItem Content="item_name"       FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                                <ComboBoxItem Content="item_quanitity"  FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                                <ComboBoxItem Content="item_category"   FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                                <ComboBoxItem Content="added"           FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                                <ComboBoxItem Content="expires"         FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                                <ComboBoxItem Content="limit"           FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+
+                            </ComboBox>
+
+                            <Border Grid.Column="4" Grid.Row="3" BorderBrush="Gray" BorderThickness="2">
+                                <TextBox x:Name="REMOVE_INPUT" Background="LightGray"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="14" FontWeight="Bold" FontFamily="consolas"/>
+                            </Border>
+
+
+                            <Button x:Name="REMOVE_SUBMIT" Click="REMOVE_SUBMIT_EXECUTE" Grid.Row="4" Grid.Column="3" BorderBrush="Black" BorderThickness="1" FontFamily="consolas" FontSize="14" Content="Submit"/>
+
+                        </Grid>
+
+                    </TabItem>
+
+
+
+
+
+                </TabControl>
+
+            </Grid>
+
+        <!--CONSOLE_FEEDBACK-->
+        <Grid Grid.Row="1" Grid.ColumnSpan="4">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="125"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                x:Name="ARROW_PROMPT"
+                Grid.Column="1"
+                Grid.Row="1"
+                Grid.ColumnSpan="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                
+                Background="White"
+                
+                FontFamily="Ink Free"
+                FontSize="20"
+                FontWeight="Bold" 
+                Text="/> "              
+                
+             />
+
+                <!--Need a hook for enter key!  Write command directly!
+            It should pop up success/failure clr in time by default
+            When user presses enter and success, clr and success, then clr
+            on failure, clr, failure, clr
+            
+            We should log this, and use it for intelligence!
+            
+            ACTUALLY!  We can signal success or failure via the prompt text
+            eg. />  changing color red/green! (not colorblind friendly!)-->
+                <TextBox 
+                x:Name="USER_CONSOLE" 
+                Grid.Column="2"
+                Grid.Row="1"
+                Grid.ColumnSpan="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                
+                Background="White"
+                
+                FontFamily="Ink Free"
+                FontSize="20"    
+                FontWeight="Bold" 
+                Text=""              
+                
+             />
+
+
+
+
+            </Grid>
+        <!--/CONSOLE_FEEDBACK-->
+
+        </Grid>
+
+    
+</Page>

@@ -19,11 +19,9 @@ using FontFamily = System.Windows.Media.FontFamily;
 
 namespace LifeDB.Resources.Code
 {
-
-
-    public static class TableViewController
+    internal class StockViewController
     {
-        /*
+
         private static System.Windows.Documents.Table table;
 
 
@@ -33,7 +31,7 @@ namespace LifeDB.Resources.Code
         //private static TableRow rowTemplateA = (TableRow)Application.Current.Resources["RowA"];
         //private static TableRow rowTemplateB = (TableRow)Application.Current.Resources["RowB"];
 
-       
+
         //------------------------------//
 
 
@@ -45,16 +43,16 @@ namespace LifeDB.Resources.Code
             if (reader == null) throw new Exception("Failed to get data from table via Select All @TableViewController.Generate()");
 
             var columns = reader.FieldCount;
-            
+
             List<String> values = new List<String>();
-            
-            while(reader.Read()) //REVIEW ME!
+
+            while (reader.Read()) //REVIEW ME!
             {
 
                 for (int i = 0; i < columns; i++)
                 {
 
-                    if(i == 4 | i == 5)
+                    if (i == 4 | i == 5)
                     {
                         ///We're getting a number YYYY/MM/DD
                         ///Take the value and build a date  :: In 1/12/2020, becomes 2020/1/12; Out value -> String -> Date -> Add -> Table
@@ -79,7 +77,7 @@ namespace LifeDB.Resources.Code
 
         }
 
-       
+
         public static void Generate(SQLiteDataReader reader)
         {
 
@@ -94,35 +92,35 @@ namespace LifeDB.Resources.Code
 
                 for (int i = 0; i < columns; i++)
                 {
-                    
+
                     if (i == 4 | i == 5)
                     {
-                        
+
                         var preform = reader.GetValue(i);
                         var d = preform.ToString();
                         values.Add(DateNormalizer(d));
-                       
+
                     }
                     else
                         values.Add(reader.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
-               
+
                 }
 
                 GenerateRow(values);
 
-                values.Clear();              
+                values.Clear();
 
             }
 
         }
 
-        
+
         public static void Agitate(SQLiteDataReader reader)
         {
             if (reader == null) return;
             var columns = reader.FieldCount;
             List<String> DBValues = new List<String>();
-            
+
             int activeRow = 1;
             var cells = table.RowGroups[0].Rows[activeRow].Cells.ToList();
 
@@ -133,21 +131,21 @@ namespace LifeDB.Resources.Code
                 {
                     if (i == 4 | i == 5)
                     {
-                        
+
                         var preform = reader.GetValue(i);
                         var d = preform.ToString();
                         DBValues.Add(DateNormalizer(d));
-                        
+
                     }
                     else
                         DBValues.Add(reader.GetValue(i).ToString());
-                
+
                 }
 
 
-                for(int i = 0; i < columns; i++ )
+                for (int i = 0; i < columns; i++)
                 {
-                                                      //an array of blocks
+                    //an array of blocks
                     //row of cells (7), each cell has a block (paragraph), within that paragraph is a run, within the run is the text to change
                     if (!(DBValues[i].Equals(cells[i]               //get the cells in the active row
                         .Blocks                                     //get the array of parent blocks
@@ -157,7 +155,7 @@ namespace LifeDB.Resources.Code
                         .ContentStart                               //get the head (pointer) for the content of the block
                         .GetTextInRun(LogicalDirection.Forward))))  //get the text in this block, reading from left to right (String)
                                                                     //see what I mean...f-ing messy...I hope this is right, haven't tested yet
-                        
+
                     {
                         table.RowGroups[0].Rows[activeRow].Cells[i].Blocks.Clear(); //this can be modified using the above (precision), to reduce object allocations
                         table.RowGroups[0].Rows[activeRow].Cells[i].Blocks.Add(new Paragraph(new Run(DBValues[i])));
@@ -231,7 +229,7 @@ namespace LifeDB.Resources.Code
 
         }
         */
-        /*
+
         //PENDING OUTSIDE REVIEW -- My brain just refuses to wanna fix this one...idk, but this'll have to wait a little...
         public static void Deletify(List<KVP<String, String>> actions)
         {
@@ -242,28 +240,29 @@ namespace LifeDB.Resources.Code
             Boolean skippedRow = false;
             List<TableRow> forDeletion = new List<TableRow>();
 
-            foreach(TableRow row in table.RowGroups[0].Rows)
+            foreach (TableRow row in table.RowGroups[0].Rows)
             {
 
-                if(skippedRow == false) { skippedRow = true; continue; }
+                if (skippedRow == false) { skippedRow = true; continue; }
 
                 foreach (TableCell cell in row.Cells)
-                {   
-                  
+                {
+
                     //SET UP FOR MULTIPLE PAIRS, BUT NOT THE SYSTEM ITSELF YET...WILL CREATE ERRORS IN FUTURE
                     foreach (KVP<String, String> pair in actions)
                     {
-                        foreach(TableCell headerCell in headerCells)
+                        foreach (TableCell headerCell in headerCells)
                         {
-                            if(headerCell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward).ToString() == pair.GetKey())
+                            if (headerCell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward).ToString() == pair.GetKey())
                             {
-                                if(cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward).ToString() == pair.GetValue()){
+                                if (cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward).ToString() == pair.GetValue())
+                                {
 
-                                    forDeletion.Add(row);                         
+                                    forDeletion.Add(row);
 
                                 }
                             }
-                        } 
+                        }
                     }
                 }
             }
@@ -280,8 +279,8 @@ namespace LifeDB.Resources.Code
             * -
             * Rollback last written row eg. currentRow
             */
-            /*
-            foreach(TableRow row in forDeletion)
+
+            foreach (TableRow row in forDeletion)
             {
                 table.RowGroups[0].Rows.Remove(row); //it will shift "up" or "left", the rows to fill the void, in the process,
                 table.RowGroups[0].Rows.RemoveAt(currentRow); //it doesn't update the visual...so we do need to remove the last written row...?               
@@ -293,20 +292,20 @@ namespace LifeDB.Resources.Code
             }
             //SqlDb.DBCount();
             //Update(false);
-            
+
             //table.RowGroups[0].Rows.RemoveAt(currentRow - 1);
             //currentRow--;
 
             //Update(true);
-            
+
 
         }
 
-        
+
         public static void parseDelete(String? commandText)
         {
 
-            if (commandText == null 
+            if (commandText == null
                 | commandText == "DELETE FROM myTable WHERE " + ""
                 | commandText == "DELETE FROM myTable WHERE " + " ") return;
 
@@ -324,14 +323,14 @@ namespace LifeDB.Resources.Code
 
             //if (equalsCounter == 1)
             //{
-                for (int i = 0; i < pieces.Length; i++)
+            for (int i = 0; i < pieces.Length; i++)
+            {
+                if (pieces[i] == "=")
                 {
-                    if (pieces[i] == "=")
-                    {
-                        actions.Add(new KVP<String, String>(pieces[i - 1], pieces[i + 1]));
-                    }
-
+                    actions.Add(new KVP<String, String>(pieces[i - 1], pieces[i + 1]));
                 }
+
+            }
             //}
 
             Deletify(actions);
@@ -340,32 +339,33 @@ namespace LifeDB.Resources.Code
 
 
         public static void Update(Boolean fetchNewRows)
-        {   
-            
-            if(fetchNewRows == true) {
+        {
+
+            if (fetchNewRows == true)
+            {
 
                 SqlDb.DBCount(); //REQUIRED
                 int startingRow = currentRow + 1;
 
-                if (currentRow < SqlDb.lastCount) 
+                if (currentRow < SqlDb.lastCount)
                     Generate(SqlDb.GetIdRange(startingRow, SqlDb.lastCount)); //call and grab result set :: incl/incl & Generate
-                
+
             }
-            
+
             Agitate(SqlDb.GetVisibleIdRange());
 
         }
 
-       
+
         //------------------------------//
 
-       
+
         public static void Init(System.Windows.Documents.Table t)
         {
-                table = t;
+            table = t;
         }
 
-        
+
         //------------------------------//
 
 
@@ -379,20 +379,20 @@ namespace LifeDB.Resources.Code
                 table.RowGroups[0].Rows.Add(GenerateGenericRowA());
                 currentRow++;
                 var cells = table.RowGroups[0].Rows[currentRow].Cells.ToList();
-                
+
                 //clean ze row ///NO LONGER NEEDED HERE ::: MOVE LATER
                 //for(int i = 0; i < cells.Count-1; i++) table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Clear();
-                
+
                 //assign the vals 
-                for(int i = 0; i < cells.Count; i++) ///CHANGED -- From .count-1 to count
-                { 
-                    
+                for (int i = 0; i < cells.Count; i++) ///CHANGED -- From .count-1 to count
+                {
+
                     table.RowGroups[0].Rows[currentRow].Cells[i].Blocks.Add(new Paragraph(new Run(values[i])));
-                
-                }   
-                    
-                    
-                
+
+                }
+
+
+
 
             }
             else
@@ -414,7 +414,7 @@ namespace LifeDB.Resources.Code
 
         }
 
-        
+
         //------------------------------//
 
 
@@ -441,7 +441,7 @@ namespace LifeDB.Resources.Code
 
         }
 
-       
+
         private static TableRow GenerateGenericRowB()
         {
 
@@ -465,7 +465,7 @@ namespace LifeDB.Resources.Code
 
         }
 
-        
+
         //------------------------------//
 
         //I NEED A BRILLIANT BIT OF WORK HERE!
@@ -505,54 +505,53 @@ namespace LifeDB.Resources.Code
                 
             }
             */
-            /*
 
             StringBuilder reverted = new();
 
             switch (RawDate.Length)
             {
-                case 5: return reverted.Append(RawDate.Substring(2,1))
+                case 5:
+                    return reverted.Append(RawDate.Substring(2, 1))
                                         .Append("/")
-                                        .Append(RawDate.Substring(3,2))
+                                        .Append(RawDate.Substring(3, 2))
                                         .Append("/")
-                                        .Append(RawDate.Substring(0,2))
+                                        .Append(RawDate.Substring(0, 2))
                                         .ToString();
 
 
 
-                case 6: return reverted.Append(RawDate.Substring(2,2))
+                case 6:
+                    return reverted.Append(RawDate.Substring(2, 2))
                                         .Append("/")
-                                        .Append(RawDate.Substring(4,2))
+                                        .Append(RawDate.Substring(4, 2))
                                         .Append("/")
-                                        .Append(RawDate.Substring(0,2))
+                                        .Append(RawDate.Substring(0, 2))
                                         .ToString();
 
 
 
-                case 7: return reverted.Append(RawDate.Substring(4, 1)) //day
+                case 7:
+                    return reverted.Append(RawDate.Substring(4, 1)) //day
                                         .Append("/")
                                         .Append(RawDate.Substring(5, 2)) //month
                                         .Append("/")
                                         .Append(RawDate.Substring(0, 4)) //year
                                         .ToString();
-                                 
-                    
 
-                case 8: return reverted.Append(RawDate.Substring(4,2))
+
+
+                case 8:
+                    return reverted.Append(RawDate.Substring(4, 2))
                                         .Append("/")
-                                        .Append(RawDate.Substring(6,2))
+                                        .Append(RawDate.Substring(6, 2))
                                         .Append("/")
-                                        .Append(RawDate.Substring(0,4))
+                                        .Append(RawDate.Substring(0, 4))
                                         .ToString();
 
                 default: return "-1";
             }
-               
+
         }
 
-        */
-
     }
-
-
 }
