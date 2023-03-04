@@ -12,7 +12,7 @@
       >
 
 
-    <Grid>
+    <Grid Height="auto" Width="auto">
 
         <Grid Grid.Row="1" Grid.ColumnSpan="4">
 

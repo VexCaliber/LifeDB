@@ -127,7 +127,7 @@
                    FontFamily="Modern No. 20"
                    FontWeight="Bold"
                    FontStyle="Italic" 
-                   FontSize="18"
+                   FontSize="20"
                    Background="Gold" 
                    BorderBrush="Gold"
                    Click="ToStock" 
@@ -148,11 +148,17 @@
                 Content="Intel "/>
         <!--/TitleBar-->
 
-        <Frame x:Name="MAIN" Margin="0,24,0,-426" Grid.ColumnSpan="4" NavigationUIVisibility="Hidden">
-            
-            
-            
-        </Frame>
+        <Frame x:Name="MAIN" 
+               Margin="0,24,0,-426" 
+               Grid.ColumnSpan="4" 
+               NavigationUIVisibility="Hidden"
+               Height="auto"
+               Width="auto"
+               />
+
+
+
+
 
     </Grid>
 

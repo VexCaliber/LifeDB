@@ -68,11 +68,27 @@ namespace LifeDB.Resources.Code
             if (data == null) return;
 
             ScanTotalEntries();
+            //getData();
             ScanNames();
+            //getData();
             ScanEaches();
+            //getData();
             ScanDates();
+            //getData();
             ScanLimits();
 
+        }
+
+        public static void Refresh()
+        {
+            ClearPanels();
+            RunStats();
+        }
+
+        private static void ClearPanels()
+        {
+            snippetPanel.Children.Clear();
+            summaryPanel.Children.Clear();
         }
 
         //==========Scanners==========//

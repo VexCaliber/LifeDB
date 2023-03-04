@@ -20,6 +20,9 @@ namespace LifeDB
     public partial class MainWindow : Window
     {
 
+        Page stock = new Stock();
+        Page intel = new Intel();
+
         public MainWindow()
         {
             
@@ -80,14 +83,15 @@ namespace LifeDB
         private void ToIntel(object sender, RoutedEventArgs e)
         {
 
-            MAIN.Content = new Intel();
+            MAIN.Content = intel;
+            IntelViewController.Refresh();
 
         }
 
         private void ToStock(object sender, RoutedEventArgs e)
         {
 
-            MAIN.Content = new Stock();
+            MAIN.Content = stock;
 
         }
 
