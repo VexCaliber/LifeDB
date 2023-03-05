@@ -1,0 +1,48 @@
+﻿<Page x:Class="LifeDB.Intro"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:LifeDB"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Intro"
+      Background="Beige"
+      >
+
+    <Grid>
+
+        <TextBlock HorizontalAlignment="Center" 
+               VerticalAlignment="Center"
+               Height="300"
+               Width="600"
+               TextWrapping="Wrap"
+               FontFamily="consolas"
+                   
+               >
+
+            Hello there!  So I must admit, this project went waaay off the rails compared
+            to how I wanted to set this up.  Whatever it ultimately amounts to, at some point
+            I'll work on a new variant that'll be loose enough to allow creating your own table,
+            visually and simply, whilst hopefully retaining all the cool stuff I kinda had planned.
+            
+            <LineBreak/>
+            <LineBreak/>
+            
+            Although I will admit, third party api's that I was hoping existed before looking for them
+            seem to be non-existent...at least in minimal terms as I would need.  So likely there will have to be
+            a server behind this one day, assuming everything doesn't go straight to hell world wise... O.O
+            
+            <LineBreak/>
+            <LineBreak/>
+            
+            Anyway, that's all...don't have high expectations for this version. ;)
+            
+            <LineBreak/>
+            
+
+        </TextBlock>
+        
+    </Grid>
+    
+</Page>

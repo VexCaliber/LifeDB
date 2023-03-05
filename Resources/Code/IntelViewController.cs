@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Reflection.PortableExecutable;
@@ -18,8 +19,6 @@ namespace LifeDB.Resources.Code
 
         private static StackPanel? snippetPanel;
         private static StackPanel? summaryPanel;
-
-        private static SQLiteDataReader? data;
 
         public static void Init(StackPanel snippets, StackPanel summary)
         {
@@ -52,30 +51,20 @@ namespace LifeDB.Resources.Code
 
         private static SQLiteDataReader getData()
         {
-            //ensures freshness
-            data = SqlDb.SelectAll();
-            return data; 
+            return SqlDb.SelectAll();
         }
 
         //==========Command==========//
 
+        /// THESE NEED TO GO TO A THREAD CAROUSEL FOR RESPONSIVENESS!
         public static void RunStats()
         {
 
-            //if the resultSet closes permanently, then re-engineer this to go line by line, passing each entry individually to each method.
-            getData();
-
-            if (data == null) return;
-
-            ScanTotalEntries();
-            //getData();
-            ScanNames();
-            //getData();
-            ScanEaches();
-            //getData();
-            ScanDates();
-            //getData();
-            ScanLimits();
+            ScanTotalEntries(getData());
+            //ScanNames(getData()); //O.O Whoa...from 100mb to 5gb...memory leaks? kk...mem leak fixed but O.O I dun goofed the logic >.> fix later!
+            ScanEaches(getData());
+            ScanDates(getData());
+            //ScanLimits(getData()); // >.> god i hate variability compounding...such a mindfyuck (FIXME!)
 
         }
 
@@ -95,7 +84,7 @@ namespace LifeDB.Resources.Code
 
         //|0 id |1 item_name |2 item_quantity |3 item_category |4 added |5 expires |6 limit |
 
-        private static void ScanTotalEntries()
+        private static void ScanTotalEntries(SQLiteDataReader data)
         {
             
             int count = 0;
@@ -110,27 +99,38 @@ namespace LifeDB.Resources.Code
             
         }
 
-        private static void ScanNames()
+        private static void ScanNames(SQLiteDataReader data)
         {
             
-            List<String> snippets = new List<String>();
-            List<String> summarys = new List<String>();
+            List<string> snippets = new List<string>();
+            List<string> summaries = new List<string>();
 
-            List<String> names    = new List<String>();
-            List<Int32> quants    = new List<Int32>();
+            List<string> names    = new List<string>();
+            List<int> quants    = new List<int>();
 
-            List<Int32> floats = new List<Int32>();
+            List<int> floats = new List<int>();
 
             int broadDuplicates = 0;
             int dupes           = 0;
 
-            while (data.Read()) { names.Add(data.GetString(1));  quants.Add(data.GetInt32(2)); }
+            while (data.Read()) 
+            { 
+                names.Add(data.GetString(1));
+
+                if (data.GetValue(2) == DBNull.Value) quants.Add(0);
+                else quants.Add(data.GetInt32(2));
+
+                //quants.Add(0);
+                //if (data.GetValue(2) == DBNull.Value) quants.Add(0);
+                //else quants.Add((int)data.GetInt32(2));//.GetInt32(2)
+
+            }
 
             int ctrlNum = 0;
             int fl04t   = 0;
             while (ctrlNum < names.Count)
             {
-                String tmp = names[ctrlNum];
+                string tmp = names[ctrlNum];
                 fl04t      = quants[ctrlNum];
 
                 for (int i = 0; i < names.Count; i++)
@@ -144,23 +144,33 @@ namespace LifeDB.Resources.Code
                 }
 
                 snippets.Add(tmp + " has " +dupes+ " duplicates, which combined amounts to a total of " +fl04t+ "eaches.");
-                summarys.Add(fl04t + " " + tmp);
+                summaries.Add(fl04t + " " + tmp);
 
                 fl04t = 0;
-                tmp  = "";
+                tmp  = null;
+                ctrlNum++;
 
             }
 
-            summarys.Insert(0, "Total Duplicates = " + broadDuplicates);
+            summaries.Insert(0, "Total Duplicates = " + broadDuplicates);
+
+            foreach (string sn in snippets) WriteToSnippets(sn);
+            foreach (string su in summaries) WriteToSnippets(su);
 
         }
 
-        private static void ScanEaches()
+        private static void ScanEaches(SQLiteDataReader data)
         {
 
             int eachesTotal = 0;
 
-            while (data.Read()) eachesTotal += data.GetInt32(2);
+            while (data.Read())
+            {
+                //eachesTotal += data.GetInt32(2);
+                if (data.GetValue(2) == DBNull.Value) continue;
+                else eachesTotal += data.GetInt32(2);
+
+            }
 
             WriteToSnippets("Total Amount of item eaches comes to a total of: "+eachesTotal);
             WriteToSummary("Total Eaches = "+eachesTotal);
@@ -168,7 +178,7 @@ namespace LifeDB.Resources.Code
         }
 
         //modify to offer order of which eaches to use, mindful of duplicates, based on earliest expiring to latest expiring...
-        private static void ScanDates()
+        private static void ScanDates(SQLiteDataReader data)
         {
             int expiredEntries     = 0;
             int totalExpiredEaches = 0;
@@ -178,25 +188,32 @@ namespace LifeDB.Resources.Code
 
                 if (ExpiresWithin30(data.GetString(5)))
                 {
-                    WriteToSnippets("At id: " + data.GetValue(0).ToString() + ", Item: " + data.GetString(1) + ", representing: " + data.GetValue(2).ToString() + " eaches is going to expire withing 30 days!");
+
+                    if (data.GetValue(2) == DBNull.Value) 
+                        WriteToSnippets("At id: " + data.GetValue(0).ToString() + ", Item: " + data.GetString(1) + ", representing: " + 0 + " eaches is going to expire withing 30 days!");
+                    else 
+                        WriteToSnippets("At id: " + data.GetValue(0).ToString() + ", Item: " + data.GetString(1) + ", representing: " + data.GetValue(2).ToString() + " eaches is going to expire withing 30 days!");
+
                     WriteToSummary("id: " + data.GetValue(0).ToString() + "contains eaches nearing expiration");
+
                 }
                 
                 if (HasExpired(data.GetString(5)))
                 {
-                    WriteToSnippets("At id: " + data.GetValue(0).ToString() + ", Item: " + data.GetString(1) + ", representing: " + data.GetValue(2).ToString() + " eaches has expired!");
+
+                    if (data.GetValue(2) == DBNull.Value)
+                        WriteToSnippets("At id: " + data.GetValue(0).ToString() + ", Item: " + data.GetString(1) + ", representing: " + 0 + " eaches has expired!");
+                    else
+                        WriteToSnippets("At id: " + data.GetValue(0).ToString() + ", Item: " + data.GetString(1) + ", representing: " + data.GetValue(2).ToString() + " eaches has expired!");
                     
                     expiredEntries++;
-                    
-                    try
-                    {
+
+                    if (data.GetValue(2) == DBNull.Value)
+                        continue;
+                    else
                         totalExpiredEaches += (Int32)data.GetValue(2);
 
-                    }
-                    catch(Exception ex)
-                    {
-                        //ignore
-                    }
+              
 
                 }
                 
@@ -211,7 +228,7 @@ namespace LifeDB.Resources.Code
         //maybe modify to account for the duplicates
         //take advantage of bigbox api's (if available) to pull prices (with links) for resupply when under limit?  possibly dev a light scraper for this if needed.
         //if over limit, maybe scrape prices from online marketplaces for selling prompts
-        private static void ScanLimits()
+        private static void ScanLimits(SQLiteDataReader data)
         {
 
             int over = 0, at = 0, under = 0;

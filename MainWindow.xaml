@@ -12,7 +12,9 @@
         MinWidth="500"
         WindowStyle="None"
         Background="Beige"
-        ResizeMode="CanResizeWithGrip" 
+        ResizeMode="CanResizeWithGrip"
+        
+        WindowStartupLocation="CenterScreen"
         AllowsTransparency="True"
         >
 
@@ -154,6 +156,7 @@
                NavigationUIVisibility="Hidden"
                Height="auto"
                Width="auto"
+               
                />
 
 

@@ -27,6 +27,7 @@ namespace LifeDB
         {
             
             InitializeComponent();
+            MAIN.Content = new Intro();
 
             /*
 
