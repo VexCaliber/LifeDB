@@ -61,10 +61,10 @@ namespace LifeDB.Resources.Code
         {
 
             ScanTotalEntries(getData());
-            //ScanNames(getData()); //O.O Whoa...from 100mb to 5gb...memory leaks? kk...mem leak fixed but O.O I dun goofed the logic >.> fix later!
+            ScanNames(getData()); //observation
             ScanEaches(getData());
             ScanDates(getData());
-            //ScanLimits(getData()); // >.> god i hate variability compounding...such a mindfyuck (FIXME!)
+            ScanLimits(getData());
 
         }
 
@@ -115,39 +115,51 @@ namespace LifeDB.Resources.Code
 
             while (data.Read()) 
             { 
+
                 names.Add(data.GetString(1));
 
                 if (data.GetValue(2) == DBNull.Value) quants.Add(0);
                 else quants.Add(data.GetInt32(2));
 
-                //quants.Add(0);
-                //if (data.GetValue(2) == DBNull.Value) quants.Add(0);
-                //else quants.Add((int)data.GetInt32(2));//.GetInt32(2)
-
             }
+
 
             int ctrlNum = 0;
             int fl04t   = 0;
-            while (ctrlNum < names.Count)
-            {
-                string tmp = names[ctrlNum];
-                fl04t      = quants[ctrlNum];
+            
+            List<string> prevEncountered = new List<string>();
 
-                for (int i = 0; i < names.Count; i++)
+            while (ctrlNum < names.Count) // arb controlNumber less than the sum of names
+            {
+
+                string tmp = names[ctrlNum]; // temp string = first instance of name
+                fl04t      = quants[ctrlNum]; // first value in quants 1:1 corresponds to same position in names
+
+                if (prevEncountered.Contains(tmp)) { fl04t = 0; tmp = ""; ctrlNum++; continue; } //prevents rebounding/recyling previous names...at one level
+
+                for (int i = 0; i < names.Count; i++) // cycle through all names for duplicates
                 {
-                    if (tmp.Equals(names[i]) & i != ctrlNum)
+                    if (tmp.Equals(names[i]) & i != ctrlNum) //if duplicate name encountered, but not the first of...
                     {
-                        fl04t += quants[i];
-                        dupes++;
-                        broadDuplicates++;
+                        fl04t += quants[i]; // add the duplicates eaches quantity to the floating total
+                        dupes++;            // tick the dupes
+                        broadDuplicates++;  // tick the broad dupes
+                        //NEED A WAY to BREAK OUT...THIS ALSO CAUSES REBOUNDING...
+                        //it will continue cycling, but it won't break and get to fl04t = 0
+                        //i think...idk, I'm a bit tired now...
                     }
                 }
 
-                snippets.Add(tmp + " has " +dupes+ " duplicates, which combined amounts to a total of " +fl04t+ "eaches.");
+                //print the vals
+                snippets.Add(tmp + " has " +dupes+ " duplicates, which combined amounts to a total of " +fl04t+ " eaches.");
                 summaries.Add(fl04t + " " + tmp);
 
+                //Prevent rebounding
+                prevEncountered.Add(tmp);
+
+                //reset important variables
                 fl04t = 0;
-                tmp  = null;
+                tmp  = "";
                 ctrlNum++;
 
             }
@@ -155,7 +167,7 @@ namespace LifeDB.Resources.Code
             summaries.Insert(0, "Total Duplicates = " + broadDuplicates);
 
             foreach (string sn in snippets) WriteToSnippets(sn);
-            foreach (string su in summaries) WriteToSnippets(su);
+            //foreach (string su in summaries) WriteToSummary(su);
 
         }
 
@@ -235,6 +247,8 @@ namespace LifeDB.Resources.Code
 
             while (data.Read())
             {
+
+                if (data.GetValue(2) == DBNull.Value | data.GetValue(6) == DBNull.Value) continue; // well that was easy...god, tired brain is brutal >.>
 
                 if ((Int32)data.GetValue(2) > (Int32)data.GetValue(6))
                 {

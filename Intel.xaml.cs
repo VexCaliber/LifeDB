@@ -29,7 +29,7 @@ namespace LifeDB
         }
 
         //-------------------------------------//
-
+        /*
         private void MoveWindow(object sender, MouseButtonEventArgs e)
         {
             
@@ -78,5 +78,7 @@ namespace LifeDB
         {
 
         }
+
+        */
     }
 }

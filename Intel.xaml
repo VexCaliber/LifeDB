@@ -39,6 +39,8 @@
             <!--DATA-->
             <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="5,5,5,5" >
 
+                <!--NOTE: F'ed up nesting here...change later!-->
+                
                 <Label 
                
                Margin="0,0,0,410"
@@ -52,12 +54,12 @@
                BorderThickness="2" 
                Content="SNIPPETS"/>
 
-                <StackPanel Name="SNIPPETPANEL" Margin="0,30,0,0" Background="Silver" CanVerticallyScroll="True">
-
+                <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden">
                 
+                    <StackPanel Name="SNIPPETPANEL" Margin="0,30,0,0" Background="Silver" CanVerticallyScroll="True"/>
             
-                </StackPanel>
-        
+                </ScrollViewer>
+
             </Grid>    
             <!--/DATA-->
         
@@ -75,19 +77,22 @@
                BorderThickness="2" 
                Content="SUMMARY"/>
 
-            <StackPanel Name="SUMMARYPANEL" Grid.Row="1" Grid.Column="3" Margin="5,35,5,5" Background="silver" CanVerticallyScroll="True">
+            <ScrollViewer Grid.Row="1" Grid.Column="3" 
+                          Margin="5,35,5,5" 
+                          Background="silver" 
+                          VerticalScrollBarVisibility="Hidden"
+                          HorizontalScrollBarVisibility="Hidden">
 
-                <Label FontFamily="Consolas" 
-                   FontSize="12" 
-                   FontWeight="Bold"
-                   Content="test"/>
-
-             <!--I'm not exactly sure how I wanna do this, so we'll pick up here later...-->
-
-            </StackPanel>
+                <StackPanel Name="SUMMARYPANEL" 
+                            Grid.Row="1" Grid.Column="3"  
+                            Background="silver" 
+                            CanVerticallyScroll="True" 
+                            Visibility="Visible"/>
+           
+            </ScrollViewer>
             <!--/SUMMARY-->
-
-    </Grid>
+    
+        </Grid>
 
     
 </Page>
