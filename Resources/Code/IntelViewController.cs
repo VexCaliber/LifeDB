@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -11,6 +12,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Markup;
+using static Azure.Core.HttpHeader;
 
 namespace LifeDB.Resources.Code
 {
@@ -99,6 +102,7 @@ namespace LifeDB.Resources.Code
             
         }
 
+        //REWRITE THIS >.<
         private static void ScanNames(SQLiteDataReader data)
         {
             
@@ -110,8 +114,7 @@ namespace LifeDB.Resources.Code
 
             List<int> floats = new List<int>();
 
-            int broadDuplicates = 0;
-            int dupes           = 0;
+
 
             while (data.Read()) 
             { 
@@ -124,23 +127,42 @@ namespace LifeDB.Resources.Code
             }
 
 
-            int ctrlNum = 0;
-            int fl04t   = 0;
-            
+            int ctrlNum = 0; //arbitrary interation control
+            int fl04t   = 0; //floating totals of duplicates
+            int dupes   = -1;
+            int broadDuplicates = 0;
+
             List<string> prevEncountered = new List<string>();
+            string lastName = "";
 
             while (ctrlNum < names.Count) // arb controlNumber less than the sum of names
-            {
+            {            
+                
+                
 
                 string tmp = names[ctrlNum]; // temp string = first instance of name
                 fl04t      = quants[ctrlNum]; // first value in quants 1:1 corresponds to same position in names
 
-                if (prevEncountered.Contains(tmp)) { fl04t = 0; tmp = ""; ctrlNum++; continue; } //prevents rebounding/recyling previous names...at one level
+                if (prevEncountered.Contains(tmp)) { fl04t = 0; tmp = ""; ctrlNum++; continue; } //prevents rebounding/recyling previous names...at one level x2
 
                 for (int i = 0; i < names.Count; i++) // cycle through all names for duplicates
                 {
                     if (tmp.Equals(names[i]) & i != ctrlNum) //if duplicate name encountered, but not the first of...
                     {
+
+                        if(!lastName.Equals(tmp)) //hopefully should stop the 2nd level of rebounding...x3
+                        {
+                            
+                            //print the vals
+                            snippets.Add(tmp + " has " + dupes + " duplicates, which combined amounts to a total of " + fl04t + " eaches.");
+                            summaries.Add(fl04t + " " + tmp);
+
+                            //reset important variables
+                            fl04t = 0;
+
+                        }
+
+                        lastName = names[i];
                         fl04t += quants[i]; // add the duplicates eaches quantity to the floating total
                         dupes++;            // tick the dupes
                         broadDuplicates++;  // tick the broad dupes
@@ -151,16 +173,17 @@ namespace LifeDB.Resources.Code
                 }
 
                 //print the vals
-                snippets.Add(tmp + " has " +dupes+ " duplicates, which combined amounts to a total of " +fl04t+ " eaches.");
-                summaries.Add(fl04t + " " + tmp);
+                //snippets.Add(tmp + " has " +dupes+ " duplicates, which combined amounts to a total of " +fl04t+ " eaches.");
+                //summaries.Add(fl04t + " " + tmp);
 
-                //Prevent rebounding
+                //Prevent rebounding x2
                 prevEncountered.Add(tmp);
 
                 //reset important variables
                 fl04t = 0;
                 tmp  = "";
                 ctrlNum++;
+                dupes = -1;
 
             }
 
@@ -168,6 +191,43 @@ namespace LifeDB.Resources.Code
 
             foreach (string sn in snippets) WriteToSnippets(sn);
             //foreach (string su in summaries) WriteToSummary(su);
+
+        }
+
+        private static void ScanNamesAlt(SQLiteDataReader data)
+        {
+
+            //Dictionary<string,int> kvps = new Dictionary<string,int>();
+            List<KVP<string, int>> kvps =new List<KVP<string, int>>();
+
+
+            while (data.Read())
+            {
+
+                if (kvps.ContainsKey(data.GetString(1)) & data.GetValue(2) != DBNull.Value) //If string key already exists and the int to pull is not null
+                {
+
+                    //kvps.GetValue(data.GetString(1)) += data.GetInt32(2);
+                    //kvps.
+
+          
+
+
+                }
+                else
+                {
+
+                    if (data.GetValue(2) == DBNull.Value) kvps.Add(data.GetString(1), 0);
+                    else kvps.Add(data.GetString(1) ,data.GetInt32(2));
+
+                }
+
+                
+
+
+
+            }
+
 
         }
 
@@ -354,6 +414,9 @@ namespace LifeDB.Resources.Code
 
 
         }
+
+
+
 
 
     }

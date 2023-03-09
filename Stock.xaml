@@ -5,7 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:LifeDB"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      Height="auto"
+      Width="auto"
+      MinHeight="400"
+      MinWidth="500"
       Title="Stock"
       Name="_Stock"
       Background="Beige"
@@ -15,7 +18,7 @@
 
     <Grid Height="auto" Width="auto">
 
-        <Grid Grid.Row="1" Grid.ColumnSpan="4">
+        <Grid Grid.Row="1" Grid.ColumnSpan="4" Height="auto" Width="auto">
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -25,11 +28,11 @@
 
 
                 <!--ZE_TABLE!-->
-                <Grid>
+            <Grid Height="auto" Width="auto">
 
-                    <FlowDocumentReader ViewingMode="Scroll">
+                <FlowDocumentReader ViewingMode="Scroll" Height="auto" Width="auto">
 
-                        <FlowDocument>
+                    <FlowDocument PageHeight="auto" PageWidth="auto">
 
                             <Table x:Name="myTable">
 
@@ -246,11 +249,11 @@
                 <!--/ZE_TABLE!-->
 
 
-                <TabControl Grid.Row="1" Height="124" SelectedIndex="0" VerticalContentAlignment="Center">
+            <TabControl Grid.Row="1" Height="auto" Width="auto" SelectedIndex="0" VerticalContentAlignment="Center">
 
-                    <TabItem Header="Add">
+                <TabItem Header="Add" Height="auto" Width="auto">
 
-                        <Grid>
+                    <Grid Height="auto" Width="auto">
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -293,9 +296,9 @@
 
                     </TabItem>
 
-                    <TabItem Header="Edit">
+                <TabItem Header="Edit" Height="auto" Width="auto">
 
-                        <Grid>
+                        <Grid Height="auto" Width="auto">
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -336,11 +339,11 @@
 
                         </Grid>
 
-                    </TabItem>
+                 </TabItem>
 
-                    <TabItem Header="Remove">
+                <TabItem Header="Remove" Height="auto" Width="auto">
 
-                        <Grid>
+                        <Grid Height="auto" Width="auto">
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -386,7 +389,7 @@
 
                         </Grid>
 
-                    </TabItem>
+                 </TabItem>
 
 
 
