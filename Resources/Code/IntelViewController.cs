@@ -64,7 +64,7 @@ namespace LifeDB.Resources.Code
         {
 
             ScanTotalEntries(getData());
-            ScanNames(getData()); //observation
+            //ScanNames(getData()); //observation
             ScanEaches(getData());
             ScanDates(getData());
             ScanLimits(getData());
@@ -194,6 +194,7 @@ namespace LifeDB.Resources.Code
 
         }
 
+        /*
         private static void ScanNamesAlt(SQLiteDataReader data)
         {
 
@@ -230,6 +231,7 @@ namespace LifeDB.Resources.Code
 
 
         }
+        */
 
         private static void ScanEaches(SQLiteDataReader data)
         {

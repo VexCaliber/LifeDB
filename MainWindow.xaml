@@ -156,6 +156,8 @@
                NavigationUIVisibility="Hidden"
                Height="auto"
                Width="auto"
+               VerticalContentAlignment="Center"
+               HorizontalContentAlignment="Center"
                
                />
 

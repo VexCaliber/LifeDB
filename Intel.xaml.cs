@@ -17,7 +17,7 @@ using System.Windows.Shapes;
 namespace LifeDB
 {
     /// <summary>
-    /// Interaction logic for Intel.xaml
+    /// Interaction logic for IntelFlowable.xaml
     /// </summary>
     public partial class Intel : Page
     {
@@ -27,58 +27,5 @@ namespace LifeDB
             IntelViewController.Init(SNIPPETPANEL, SUMMARYPANEL);
             IntelViewController.RunStats();
         }
-
-        //-------------------------------------//
-        /*
-        private void MoveWindow(object sender, MouseButtonEventArgs e)
-        {
-            
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                MainWindow.GetWindow(this).DragMove();
-                e.Handled = true;
-            }
-
-        }
-
-        private void MinWindow(object sender, RoutedEventArgs e)
-        {
-            
-            MainWindow.GetWindow(this).WindowState = WindowState.Minimized;
-
-        }
-
-        private void MaxWindow(object sender, RoutedEventArgs e)
-        {
-
-            if (MainWindow.GetWindow(this).WindowState == WindowState.Maximized)
-            {
-                MainWindow.GetWindow(this).WindowState = WindowState.Normal;
-            }
-            else
-            {
-                MainWindow.GetWindow(this).WindowState = WindowState.Maximized;
-            }
-
-        }
-
-        private void CloseWindow(object sender, RoutedEventArgs e)
-        {
-
-            MainWindow.GetWindow(this).Close(); 
-
-        }
-
-        private void MoveWindow(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void FixedPage_Scroll(object sender, System.Windows.Controls.Primitives.ScrollEventArgs e)
-        {
-
-        }
-
-        */
     }
 }
