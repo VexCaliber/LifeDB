@@ -104,7 +104,7 @@ namespace LifeDB.Resources.Code
             
         }
 
-        //REWRITE THIS >.<
+        /*  //REWRITE THIS >.<
         private static void ScanNames(SQLiteDataReader data)
         {
             
@@ -192,7 +192,7 @@ namespace LifeDB.Resources.Code
             foreach (string sn in snippets) WriteToSnippets(sn);
             //foreach (string su in summaries) WriteToSummary(su);
 
-        }
+        }*/
 
         private static void ScanNamesAlt(SQLiteDataReader data)
         {
