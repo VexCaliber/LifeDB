@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using System;
+using System.CodeDom;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Runtime.CompilerServices;
@@ -64,7 +66,7 @@ namespace LifeDB.Resources.Code
         {
 
             ScanTotalEntries(getData());
-            //ScanNames(getData()); //observation
+            ScanNamesAlt(getData()); 
             ScanEaches(getData());
             ScanDates(getData());
             ScanLimits(getData());
@@ -127,18 +129,16 @@ namespace LifeDB.Resources.Code
             }
 
 
-            int ctrlNum = 0; //arbitrary interation control
-            int fl04t   = 0; //floating totals of duplicates
-            int dupes   = -1;
-            int broadDuplicates = 0;
+            int ctrlNum         = 0;  //arbitrary interation control
+            int fl04t           = 0;  //floating totals of duplicate eaches...
+            int dupes           = -1; //account for first instance
+            int broadDuplicates = 0;  //entry duplicates
 
             List<string> prevEncountered = new List<string>();
             string lastName = "";
 
             while (ctrlNum < names.Count) // arb controlNumber less than the sum of names
             {            
-                
-                
 
                 string tmp = names[ctrlNum]; // temp string = first instance of name
                 fl04t      = quants[ctrlNum]; // first value in quants 1:1 corresponds to same position in names
@@ -191,6 +191,69 @@ namespace LifeDB.Resources.Code
 
             foreach (string sn in snippets) WriteToSnippets(sn);
             //foreach (string su in summaries) WriteToSummary(su);
+
+        }
+
+        private static void ScanNamesAlt(SQLiteDataReader data)
+        {
+
+            List<string> snippets           = new List<string>();
+            List<string> summaries          = new List<string>();
+            List<string> names              = new List<string>();
+            List<int>    quants             = new List<int>();
+            List<string> prevNames          = new List<string>(); 
+
+            while (data.Read())
+            {
+
+                names.Add(data.GetString(1));
+
+                if (data.GetValue(2) == DBNull.Value) quants.Add(0);
+                else quants.Add(data.GetInt32(2));
+
+            }
+
+            int quantityDuplicates  = 0;   
+            
+            int iteration          = 0;
+
+            for(int i = 0; i < names.Count; i++)
+            {
+
+                string currentName   = names[i];
+                int  currentEaches   = 0;
+                int duplicateEntries = -1;
+               
+                foreach(string name in names)
+                {
+
+                    if (prevNames.Contains(currentName)) break; //continue; // break;
+
+                    if (name.Equals(currentName))
+                    {
+
+                        currentEaches += quants[iteration];
+                        duplicateEntries += 1;
+
+                    }
+
+                    iteration++;
+                }
+
+                if (duplicateEntries > -1)
+                {
+                    snippets.Add(currentName + " has " + duplicateEntries + " duplicates, which combined amounts to a total of " + currentEaches + " eaches.");
+                    summaries.Add(currentName + " has " + duplicateEntries + " duplicates");
+                    summaries.Add(currentName + " has " + currentEaches + " total eaches");  
+                }
+
+                if (!prevNames.Contains(currentName)) prevNames.Add(currentName); 
+                iteration = 0;
+
+            }
+
+            foreach (string sn in snippets) WriteToSnippets(sn);
+            foreach (string su in summaries) WriteToSummary(su);
 
         }
 

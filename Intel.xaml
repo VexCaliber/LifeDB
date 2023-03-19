@@ -12,6 +12,7 @@
       
       >
 
+    <!--FIX RESIZING HEIGHT...-->
     
     <Grid Background="Beige" >
 
@@ -26,11 +27,12 @@
         <Grid.RowDefinitions>
 
             <RowDefinition Height="40"/>
-            <RowDefinition/>
+            <RowDefinition />
 
         </Grid.RowDefinitions>
 
-
+        <!---->
+        
         <Label Grid.Column="0"
                Grid.ColumnSpan="2"
                Grid.Row="0" 
@@ -42,8 +44,6 @@
                FontFamily="Consolas"
                FontSize="12"
                FontWeight="Bold"
-               Width="auto"
-               Height="auto"
                Content="SNIPPETS"
                />
 
@@ -53,19 +53,17 @@
                       Margin="5,0,5,5"
                       Background="Silver"
                       VerticalScrollBarVisibility="Visible"
-                      HorizontalScrollBarVisibility="Hidden">
-        
+                      HorizontalScrollBarVisibility="Hidden" 
+                      Width="auto"
+                      Height="auto"
+                      >
+
             <StackPanel Name="SNIPPETPANEL"/>
-                    
-        
+
+
         </ScrollViewer>
 
-
-
-
-
-
-
+        <!---->
 
         <Label Grid.Column="2" 
                Grid.Row="0"  
@@ -80,19 +78,18 @@
                Content="SUMMARY"
                />
 
-
         <ScrollViewer Grid.Column="2"
                       Grid.Row="1"
                       Margin="5,0,5,5"
                       Background="Silver"
                       VerticalScrollBarVisibility="Visible"
-                      HorizontalScrollBarVisibility="Hidden">
-            
+                      HorizontalScrollBarVisibility="Hidden"
+                      Width="auto"
+                      Height="auto">
+
             <StackPanel Name="SUMMARYPANEL"/>
 
         </ScrollViewer>
-
-
 
     </Grid>
 
