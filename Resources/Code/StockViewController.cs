@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Reflection.PortableExecutable;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -238,7 +239,10 @@ namespace LifeDB.Resources.Code
 
             var headerCells = table.RowGroups[0].Rows[0].Cells;
             Boolean skippedRow = false;
-            List<TableRow> forDeletion = new List<TableRow>();
+            //List<TableRow> forDeletion = new List<TableRow>();
+            List<int> targetIndexes = new List<int>();
+
+            int rowNum = 1;
 
             foreach (TableRow row in table.RowGroups[0].Rows)
             {
@@ -258,13 +262,17 @@ namespace LifeDB.Resources.Code
                                 if (cell.Blocks.FirstBlock.SiblingBlocks.FirstBlock.ContentStart.GetTextInRun(LogicalDirection.Forward).ToString() == pair.GetValue())
                                 {
 
-                                    forDeletion.Add(row);
+                                    //forDeletion.Add(row);
+                                    targetIndexes.Add(rowNum);
 
                                 }
                             }
                         }
                     }
                 }
+
+                rowNum++;
+
             }
 
             /*
@@ -280,25 +288,25 @@ namespace LifeDB.Resources.Code
             * Rollback last written row eg. currentRow
             */
 
-            foreach (TableRow row in forDeletion)
+            int counter = 0;
+
+            foreach (int index in targetIndexes)
             {
-                
-                table.RowGroups[0].Rows.Remove(row); //it will shift "up" or "left", the rows to fill the void, in the process,
-                //table.RowGroups[0].Rows.RemoveAt(currentRow); //it doesn't update the visual...so we do need to remove the last written row...?               
-                //--currentRow;
-                //--currentRow; //seems to have little to no effect, but currentRow is our critical pacemaker so idek what the hell is the deal here...
-                ///--currentRow;
-                Update(true);//and refresh
+
+                var indexedCells = table.RowGroups[0].Rows[targetIndexes[index]].Cells;
+
+                foreach(TableCell cell in indexedCells) 
+                    cell.Blocks.Clear();
+
+                counter++;
 
             }
-            //SqlDb.DBCount();
-            //Update(false);
-
-            //table.RowGroups[0].Rows.RemoveAt(currentRow - 1);
-            //currentRow--;
-
-            //Update(true);
-
+           
+            currentRow -= counter;
+            Update(false);
+            //redraw!?
+            
+            ///SO...I dun f'ed up indexing for the table somehow.  
 
         }
 
@@ -346,7 +354,8 @@ namespace LifeDB.Resources.Code
             {
 
                 SqlDb.DBCount(); //REQUIRED
-                int startingRow = currentRow + 1;
+                int startingRow = currentRow;
+                startingRow += 1;
 
                 if (currentRow < SqlDb.lastCount)
                     Generate(SqlDb.GetIdRange(startingRow, SqlDb.lastCount)); //call and grab result set :: incl/incl & Generate

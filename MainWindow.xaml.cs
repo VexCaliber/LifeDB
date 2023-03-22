@@ -20,8 +20,8 @@ namespace LifeDB
     public partial class MainWindow : Window
     {
 
-        Page stock = new Stock();
-        Page intel = new Intel();
+        public Page stock = new Stock();
+        public Page intel = new Intel();
 
         public MainWindow()
         {
@@ -95,6 +95,8 @@ namespace LifeDB
             MAIN.Content = stock;
 
         }
+
+        public Page getStock() { return stock; }
 
 
         //-----------------------------------------------------------------//
