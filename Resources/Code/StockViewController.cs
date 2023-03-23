@@ -235,14 +235,10 @@ namespace LifeDB.Resources.Code
         public static void Deletify(List<KVP<String, String>> actions)
         {
 
-            //Regenerate();
-
             var headerCells = table.RowGroups[0].Rows[0].Cells;
             Boolean skippedRow = false;
             //List<TableRow> forDeletion = new List<TableRow>();
-            List<int> targetIndexes = new List<int>();
-
-            int rowNum = 1;
+            //List<int> targetIndexes = new List<int>();
 
             foreach (TableRow row in table.RowGroups[0].Rows)
             {
@@ -263,7 +259,8 @@ namespace LifeDB.Resources.Code
                                 {
 
                                     //forDeletion.Add(row);
-                                    targetIndexes.Add(rowNum);
+                                    //targetIndexes.Add(rowNum);
+                                    //currentRow--;
 
                                 }
                             }
@@ -271,9 +268,9 @@ namespace LifeDB.Resources.Code
                     }
                 }
 
-                rowNum++;
-
             }
+
+            //----------------------------------------//
 
             /*
             * Scan the Rows
@@ -287,8 +284,20 @@ namespace LifeDB.Resources.Code
             * -
             * Rollback last written row eg. currentRow
             */
-
+            /*
             int counter = 0;
+            int BEGINNINGINDEX;
+
+            try
+            {
+                BEGINNINGINDEX = targetIndexes[0]; //ISSUE HERE...like a null pointer?
+            }
+            catch (Exception e)
+            {
+                ConsoleHandler.SetText(e.Message);
+                ConsoleHandler.Append(e.HResult.ToString());
+                BEGINNINGINDEX = 1;
+            }
 
             foreach (int index in targetIndexes)
             {
@@ -302,11 +311,101 @@ namespace LifeDB.Resources.Code
 
             }
            
-            currentRow -= counter;
-            Update(false);
-            //redraw!?
+            currentRow -= counter; //-1?
+
+            //----------------------------------------//
+
+            //delete the trailing rows, compensating to the logical upshift from removals.
+            //NOTE: Logically, it is shifting up removals, but there's no direct connection between the the logic and the visual
+            for (int i = 0; i < counter; i++) 
+                table.RowGroups[0].Rows.Remove(table.RowGroups[0].Rows[table.RowGroups[0].Rows.Count]);
+
+
+            //rewrite rows starting from BEGINNINGINDEX
+            //NOTE: I cannot believe I f-ed up this bad with the writing on the wall >.> for whatever reason I was acting as if there was a direct connection
+            //between the logical list and the visual representation...this could be rewritten using another loop in the main loop above possibly...autoshifting all up
+            //after removal...but it could also trigger concurrent mod ex. (Copy on write workaround?)
+
+            var DBData = SqlDb.SelectAll();
+            int iteration = 0;
+            Boolean RewriteTrigger = false;
+
+            var columns = DBData.FieldCount;
+            List<String> values = new List<String>();
+
+            // O.O does it start at 0 or 1!? >.< 
+            while (DBData.Read())
+            {
+
+                if (iteration == BEGINNINGINDEX) RewriteTrigger = true;
+
+                if(RewriteTrigger == true)
+                {
+
+                    //PULLED FROM GENERATE(reader)
+                    for (int i = 0; i < columns; i++)
+                    {
+
+                        if (i == 4 | i == 5)
+                        {
+
+                            var preform = DBData.GetValue(i);
+                            var d = preform.ToString();
+                            values.Add(DateNormalizer(d));
+
+                        }
+                        else
+                            values.Add(DBData.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
+
+                    }
+
+                    GenerateRow(values); ///REPLACE ME WITH A REWRITING METHOD AFTER TESTING!
+
+                    values.Clear();
+
+                }
+
+                iteration++;
+
+            }*/
+
+            //----------------------------------------//
+
+            for(int i = table.RowGroups[0].Rows.Count-1; i > 0 ; i--)
+                table.RowGroups[0].Rows.RemoveAt(i);
+
             
-            ///SO...I dun f'ed up indexing for the table somehow.  
+            var DBData = SqlDb.SelectAll();
+            var columns = DBData.FieldCount;
+            List<String> values = new List<String>();
+
+            currentRow = 0;
+
+            while (DBData.Read())
+            {
+
+                //PULLED FROM GENERATE(reader)
+                for (int i = 0; i < columns; i++)
+                {
+
+                    if (i == 4 | i == 5)
+                    {
+
+                            var preform = DBData.GetValue(i);
+                            var d = preform.ToString();
+                            values.Add(DateNormalizer(d));
+
+                    }
+                    else
+                        values.Add(DBData.GetValue(i).ToString()); //reader.GetString(i) //DATES ARE WRONG IN THIS AND ABOVE...MAYBE IF/ELSE PARSE DATEONLY -> toString()
+
+                }
+
+                GenerateRow(values); ///REPLACE ME WITH A REWRITING METHOD AFTER TESTING!
+
+                values.Clear();
+
+            }
 
         }
 
